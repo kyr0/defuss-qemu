@@ -31,3 +31,4 @@ Wrap: EVERY lead becomes a test | .vae/VERIFY.py rule | one MEMORY line with BC,
 2026-11-10T05:52:18Z s=01a1b55a FINDING .vae/VERIFY.py: tests.no-mocks source rules learn=test: tests/vae/test_installation.py:test_mock_policy_distinguishes_source_from_provenance runs the real installed verifier without mocks.
 2026-11-10T05:52:18Z s=01a1b55a FINDING tests/vae/e2e.py: bundle paths learn=test: make e2e continues to test the extracted portable artifact, preventing accidental source-tree dependency use.
 2026-11-10T05:52:18Z s=01a1b55a FINDING .env.example: browser harness keys learn=verifier: The environment inventory check remains enabled.
+2026-11-10T06:01:21Z s=01a1b55a DONE fp=a12b9a50f96c cov=91.4% paths=NEW_AGENT_HANDOFF.md
