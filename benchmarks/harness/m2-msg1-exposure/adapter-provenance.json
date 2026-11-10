@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "kind": "isolated-diagnostic-msg1-exposure",
+  "sources": {
+    "vm-adapter.mjs": {
+      "source": "benchmarks/harness/m2-exposure/vm-adapter.mjs",
+      "sourceSha256": "34b2f33b1e4cb3ffe5b2bb59f461c8d89bce2d3b166797d9fc02ad0189f5f115",
+      "derivedSha256": "fc3b40c75f9a845d0bd02a0ba23f9be4b5c74b8deace488058c66238cd52ed7e"
+    },
+    "browser.mjs": {
+      "source": "benchmarks/harness/m2-exposure/browser.mjs",
+      "sourceSha256": "1cde46064f694f4bd34705419b5755cd26d1e8f3bd2a3e2f915f497bcb88f248",
+      "derivedSha256": "377917cd6bbff2d66b82a42715b6bed2fb38b260d0462bdb444744c9d3995d47"
+    },
+    "run.mjs": {
+      "source": "benchmarks/harness/m2-exposure/run.mjs",
+      "sourceSha256": "7db38cccd5b9504dbec5b15b300438f27cfa15f47044eb6cd39e40bfa19ef109",
+      "derivedSha256": "b120e82fdd1a3a1aa1466c85551902171d6a1384c96278cb27dae09730af9af6"
+    },
+    "exposure.mjs": {
+      "source": "benchmarks/harness/m2-exposure/exposure.mjs",
+      "sourceSha256": "8dc02875c67e68c2a31c4ceb6cb871a4944711fcba81f6d468a10175da6ec3b0",
+      "derivedSha256": "84f5dc74cb98c8c5d338aebcb627f8f646e34b96a1d09cbc73266df1638856af"
+    },
+    "analyze.mjs": {
+      "source": "benchmarks/harness/m2-exposure/analyze.mjs",
+      "sourceSha256": "8294b45eb646d09f7b459beb6bae1b2032e83a61119f106c1ce44f8b95b09163",
+      "derivedSha256": "334f9326efb341fa95639fba245f428481e22630f5b67afed58af8c010155315"
+    },
+    "exposure.test.mjs": {
+      "source": "benchmarks/harness/m2-exposure/exposure.test.mjs",
+      "sourceSha256": "4806abf43ad1f58fd3016354487a07719c36bc77ad25266714a41f34f3a143fb",
+      "derivedSha256": "c3da8443bb688bce38be0c4be22180488215cb7e5d8c14b9428c6e37bd33ca2c"
+    },
+    "package.mjs": {
+      "source": "benchmarks/harness/m2/package.mjs",
+      "sourceSha256": "41bc200646b1b4cd51f8eee8188ae2c82aa1a776c7ad5fcc7c7e27c34f5a02a9",
+      "derivedSha256": "577e09893c0f659857f541dbff6f31d92de30a66df1afeb0fd6203217eb54c20"
+    },
+    "progress.mjs": {
+      "source": "artifacts/passive-fifo-fixture-source-02/source/progress.mjs",
+      "sourceSha256": "b33b64ca27b4c15d5d5affdc5fb14c8e72070480ee745532db8dae1fe9369aa1",
+      "derivedSha256": "d6187f9f23f8c5c264f04f2be59d4ee4c0f4b10d6185558e21d9cc093565fd90"
+    }
+  },
+  "guestSourcesUnchanged": [
+    "benchmarks/harness/m1/driver.ts",
+    "benchmarks/harness/m1/protocol.mjs",
+    "benchmarks/workload/operations.ts"
+  ],
+  "scope": "New isolated adapter; exact source/derived bytes recorded. MSG2 numerical results are not inputs. MSG1 source/build/ISA and original workload identities are independently pinned by identity.mjs."
+}

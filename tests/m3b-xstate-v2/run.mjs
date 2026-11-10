@@ -1,0 +1,145 @@
+#!/usr/bin/env node
+// Fresh diagnostic capture only; no timing, restore, source preparation or build.
+import assert from 'node:assert/strict';
+import {state as validateXstate,caps as validateXstateCaps} from './xstate.mjs';
+import {readFile,mkdir,open,realpath} from 'node:fs/promises';
+import {resolve,dirname,relative,extname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
+import {createServer} from 'node:http';
+import {parseArgs} from 'node:util';
+import {chromium} from 'playwright';
+import {validateSdkInvocation,validateImageBuild} from './build-provenance.mjs';
+import {verifyRuntimeBinding} from '../m3b-fallthrough/runtime-identity.mjs';
+import {decodeM3b,stopped} from '../m3b-fallthrough/reader.mjs';
+import {readM3Region} from '../../experiments/m3a-region/reader.mjs';
+import {protocol,programs,referenceGates,validateLayout,validateSelectedWindow,openGates} from './contract.mjs';
+import {args as guestArguments} from './guest.mjs';
+import {hostConditionIdentity,observeHostCondition} from '../../benchmarks/harness/m2-sustained-v2/host-condition.mjs';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'../..'),sha=b=>createHash('sha256').update(b).digest('hex');
+const {values}=parseArgs({options:{binding:{type:'string'},fixture:{type:'string'},enabled:{type:'string'},output:{type:'string'},timeout:{type:'string',default:'600000'}}});
+assert.ok(values.binding&&values.fixture&&values.output&&['0','1'].includes(values.enabled));const enabled=values.enabled==='1',timeoutMs=Number(values.timeout);
+assert.ok(Number.isInteger(timeoutMs)&&timeoutMs>=1000&&timeoutMs<=1800000);
+for(const key of ['TMPDIR','TMP','TEMP'])assert.ok(process.env[key]&&(await realpath(process.env[key])).startsWith(root+'/tmp/'),'Use scripts/with-tmp.py');
+const output=resolve(root,values.output);assert.equal(dirname(output),root+'/artifacts');assert.equal(await realpath(root+'/artifacts'),root+'/artifacts');await mkdir(output);
+const syncDir=async p=>{const h=await open(p,'r');try{await h.sync();}finally{await h.close();}};await syncDir(dirname(output));
+const durable=async(name,data)=>{const f=await open(resolve(output,name),'wx');try{await f.writeFile(typeof data==='string'?data:JSON.stringify(data,null,2)+'\n');await f.sync();}finally{await f.close();}await syncDir(output);};
+let report={schema:1,protocol,status:'failed',enabled,timingEligible:false},proof,server,browser,context,watchdog,journal,chain=Promise.resolve(),logFailure,closing=false,hostCondition,hostBefore,hostAfter,chrome,fixtureProvenance;
+let entries=0,eventBytes=0,reference,layout,expectedLayout,expectedSeq=0,phase='startup',configuredProgram=null,lastBanks=null,watchEpoch=0;const journalRows=[],xstateObservations=[],partitions=[],inputs={},files=new Map(),served={};
+let rejectFatal;const fatal=new Promise((_,reject)=>rejectFatal=reject);fatal.catch(()=>{});
+const read=async(name,id)=>{const p=resolve(root,name);assert.ok(p.startsWith(root+'/'));assert.equal(await realpath(p),p);const b=await readFile(p),actual={sha256:sha(b),bytes:b.length};
+ if(id){assert.equal(actual.sha256,id.sha256);if(id.bytes!==undefined)assert.equal(actual.bytes,id.bytes);}const key=relative(root,p);if(inputs[key])assert.deepEqual(inputs[key],actual);inputs[key]=actual;files.set(key,b);return b;};
+function snapshot(row,initial=false){
+ stopped(row.status,initial);assert.deepEqual(row.m3b,decodeM3b(row.m3b.raw,enabled));
+ const raw=row.m3a.raw;assert.ok(Array.isArray(raw)&&raw.length===96&&raw.every(n=>Number.isInteger(n)&&n>=0&&n<=0xffffffff));const words=Uint32Array.from(raw);
+ assert.deepEqual(row.m3a,{...readM3Region({_defuss_m3_abi:()=>1,_defuss_m3_data:()=>0,pcProfileWords:()=>words}),raw});
+ if(lastBanks)for(const family of ['m3a','m3b'])for(const [key,n]of Object.entries(row[family].counters))assert.ok(n>=lastBanks[family][key],'Lifetime counter decreased: '+family+'.'+key);lastBanks={m3a:{...row.m3a.counters},m3b:{...row.m3b.counters}};
+ assert.equal(row.m3a.enabled,true);assert.equal(row.m3a.started,!initial);assert.equal(row.m3a.saturated,false);assert.equal(row.m3a.counters.watchPcMismatches,0);assert.equal(row.m3a.counters.invalidMetadata,0);
+ assert.equal(row.pool.limit,12000);assert.ok(Number.isSafeInteger(row.pool.charged)&&row.pool.charged>=0&&row.pool.charged<=12000);assert.ok(Number.isSafeInteger(row.pool.linearMemoryBytes)&&row.pool.linearMemoryBytes>0);
+}
+function ranges(row,program,cleared){
+ for(let slot=0;slot<4;slot++){
+  const p=program===null?null:layout.programs[program],begin=p&&slot<2?BigInt(p[slot===0?'a':'b']):0n,end=begin?begin+1n:0n;
+  for(const w of [row.m3a.watches[slot],row.m3b.watches[slot]]){assert.equal(BigInt(w.begin),begin);assert.equal(BigInt(w.end),end);}
+  const a=row.m3a.watches[slot];assert.equal(a.enabled,begin!==0n);if(a.selectedEntries)assert.ok(BigInt(a.lastSelectedPC)>=begin&&BigInt(a.lastSelectedPC)<end);if(cleared)assert.equal(a.lastSelectedPC,'0x0');
+  if(cleared){assert.equal(row.m3a.watches[slot].selectedEntries,0);const w=row.m3b.watches[slot];for(const [k,v]of Object.entries(w))if(typeof v==='number'&&k!=='slot')assert.equal(v,0);assert.equal(w.lastSelectedPC,'0x0');assert.equal(w.lastGeneration,'0x0');}
+ }
+}
+function validateEvent(row){
+ for(const key of ['hostMs','signalHostMs','readHostMs'])if(row[key]!==undefined)assert.ok(typeof row[key]==='number'&&Number.isFinite(row[key])&&row[key]>=0,'Finite monotonic clock');
+ if(row.event==='startup'){
+  assert.equal(phase,'startup');snapshot(row,true);
+  for(const [name,wanted]of [['graph',proof.graph],['objects',proof.objects]]){
+   assert.equal(row[name].text,wanted.text);assert.deepEqual(row[name].raw,Array.from(Buffer.from(wanted.text)));assert.equal(sha(Buffer.from(row[name].raw)),wanted.sha256);
+  }
+  assert.equal(row.m3a.watchEpoch,0);assert.equal(row.m3b.watchEpoch,0);assert.ok(Object.values(row.m3b.counters).every(n=>n===0));phase='gate';return;
+ }
+ if(row.event==='gate'){
+  assert.deepEqual(row.xstateFeatures,{xcr0Low:row.xstateCaps.mask,xcr0High:0});validateXstateCaps(row.xstateCaps);if(report.xstateCaps)assert.deepEqual(row.xstateCaps,report.xstateCaps);else report.xstateCaps=row.xstateCaps;
+  xstateObservations.push(validateXstate(row.xstate,row.xstateCaps,row.gate));
+  assert.equal(phase,'gate');assert.deepEqual(row.gate,reference.gates[expectedSeq]);snapshot(row);assert.equal(row.m3a.watchEpoch,watchEpoch);assert.equal(row.m3b.watchEpoch,watchEpoch);assert.ok(row.signalHostMs>=0&&row.readHostMs>=row.signalHostMs);
+  if(expectedSeq===0){assert.ok(row.layout);layout=validateLayout(row.layout);for(let i=0;i<programs.length;i++)for(const key of ['name','a','b','back','side','end','ownerBytes','codeHex'])assert.deepEqual(layout.programs[i][key],expectedLayout[i][key]);ranges(row,null,true);}
+  else {assert.equal(configuredProgram,row.gate.program);ranges(row,configuredProgram,false);const partition=validateSelectedWindow({enabled,program:row.gate.program,phase:row.gate.phase,gate:row.gate,m3aA:row.m3a.watches[0],m3aB:row.m3a.watches[1],fusedA:row.m3b.watches[0],fusedB:row.m3b.watches[1]});if(partition)partitions.push({seq:row.gate.seq,program:row.gate.program,phase:row.gate.phase,...partition});}
+  phase='configured';return;
+ }
+ if(row.event==='configured'){
+  assert.equal(phase,'configured');assert.equal(row.seq,expectedSeq);const gate=reference.gates[expectedSeq],next=gate.phase==='layout'?0:gate.phase==='direct-b'?gate.program+1:gate.program;
+  assert.equal(row.program,next<programs.length?next:null);snapshot(row);watchEpoch+=4;assert.equal(row.m3a.watchEpoch,watchEpoch);assert.equal(row.m3b.watchEpoch,watchEpoch);ranges(row,row.program,true);configuredProgram=row.program;phase='ack';return;
+ }
+ if(row.event==='ack'){assert.equal(phase,'ack');assert.equal(row.seq,expectedSeq);assert.deepEqual(row.watchEpoch,{m3a:watchEpoch,m3b:watchEpoch});assert.ok(Number.isFinite(row.hostMs)&&row.hostMs>=0);expectedSeq++;phase=expectedSeq===45?'complete':'gate';return;}
+ if(row.event==='complete'){assert.equal(phase,'complete');assert.equal(expectedSeq,45);snapshot(row);assert.equal(row.m3a.watchEpoch,watchEpoch);assert.equal(row.m3b.watchEpoch,watchEpoch);assert.deepEqual(row.validation,reference.pass);ranges(row,null,true);phase='done';return;}
+ throw Error('Unknown diagnostic event');
+}
+const record=async row=>{
+ const task=chain.then(async()=>{
+  if(logFailure)throw logFailure;const bytes=Buffer.from(JSON.stringify({schema:1,record:entries,utc:new Date().toISOString(),observation:row})+'\n');
+  assert.ok(entries<160&&bytes.length<=1024*1024&&eventBytes+bytes.length<=16*1024*1024);entries++;eventBytes+=bytes.length;if(row.event!=='header')assert.equal(typeof row.serialChunk,'string');await journal.writeFile(bytes);await journal.sync();journalRows.push(row);
+  if(row.event!=='header')validateEvent(row);
+ });chain=task.catch(e=>{logFailure=e;rejectFatal(e);});return task;
+};
+await durable('request.json',{schema:1,protocol,createdUtc:new Date().toISOString(),pid:process.pid,argv:process.argv,enabled,timeoutMs,binding:values.binding,fixture:values.fixture,scope:'Fresh diagnostic guest only; all post-start failures retained, no automatic retry.'});
+try{
+ journal=await open(resolve(output,'progress.jsonl'),'wx');await syncDir(output);
+ assert.ok(process.env.DEFUSS_VM_CHROME,'Explicit DEFUSS_VM_CHROME is required');const executable=resolve(process.env.DEFUSS_VM_CHROME),binaryPath=await realpath(executable),chromeBytes=await readFile(binaryPath);chrome={executable,binaryPath,sha256:sha(chromeBytes),bytes:chromeBytes.length};
+ hostCondition=await hostConditionIdentity();hostBefore=await observeHostCondition(hostCondition);
+ proof=await verifyRuntimeBinding(root,values.binding);Object.assign(inputs,proof.inputs);for(const [path,bytes]of proof.buffers)files.set(path,bytes);
+ const fixture=relative(root,resolve(root,values.fixture));assert.ok(fixture.startsWith('artifacts/'));
+ const build=JSON.parse(await read(fixture+'/build-report.json'));validateImageBuild(build,{fixture});
+ for(const [path,id]of Object.entries(build.artifacts))await read(fixture+'/'+path,id);
+ for(const [path,h]of Object.entries(build.sources))await read(path,{sha256:h});
+ const sdkStart=JSON.parse(files.get(fixture+'/sdk-invocation-start.json')),sdkCompleteBytes=await read(build.sdkInvocation.path),sdkComplete=JSON.parse(sdkCompleteBytes);
+ validateSdkInvocation(sdkStart,sdkComplete,{root,fixture,path:build.sdkInvocation.path});await durable('sdk-invocation-complete.json',sdkCompleteBytes.toString('utf8'));
+ fixtureProvenance={buildReport:fixture+'/build-report.json',sdkInvocation:build.sdkInvocation.path,sdkCompletion:{path:'sdk-invocation-complete.json',sha256:sha(sdkCompleteBytes),bytes:sdkCompleteBytes.length},copiedSources:build.copiedSources,tools:build.tools};
+ for(const path of ['tests/m3b-xstate-v2/fixture.c','tests/m3b-xstate-v2/fixture.S','tests/m3b-xstate-v2/build.py','tests/m3b-xstate-v2/contract.mjs','experiments/m3b-fallthrough/predecode.h'])assert.match(build.sources[path],/^[a-f0-9]{64}$/);
+ assert.equal(build.initramfsSha256,inputs[fixture+'/initramfs.cpio.gz'].sha256);assert.equal(build.binarySha256,inputs[fixture+'/fixture'].sha256);
+ expectedLayout=JSON.parse(files.get(fixture+'/layout.json')).programs;assert.deepEqual(expectedLayout,build.layout);reference=referenceGates();
+ const browserSources=['tests/m3b-xstate-v2/guest.mjs','tests/m3b-fallthrough/reader.mjs','experiments/m3a-region/reader.mjs','host/browser/qmp.mjs','host/browser/machine.mjs','packaging/bun-app/serial.mjs'];
+ const sourceNames=['run.mjs','build-provenance.mjs','contract.mjs','README.md','build.py','fixture.c','fixture.S','xstate.mjs','test-xstate.mjs','test-build-provenance.mjs','controller.py','validate-host.py'].map(n=>'tests/m3b-xstate-v2/'+n);
+ for(const path of [...browserSources,...sourceNames,'tests/m3b-fallthrough/runtime-identity.mjs','scripts/with-tmp.py','benchmarks/harness/m2-sustained-v2/host-condition.mjs','package.json','package-lock.json'])await read(path);
+ const assets=['assets/bun/amd64/vmlinuz-virt',...['bios-256k.bin','kvmvapic.bin','linuxboot_dma.bin'].map(n=>'engine/qemu/pc-bios/'+n)];
+ for(const path of assets){assert.ok(proof.binding.assets?.[path]);await read(path,proof.binding.assets[path]);}
+ await record({event:'header',schema:1,protocol,enabled,timeoutMs,inputs,binding:proof.binding,fixtureProvenance,hostCondition,hostBefore,chrome,scope:'Crash partial record only; cannot substitute for complete raw report and replay.'});
+ const allowed=new Set([...browserSources,...assets,fixture+'/initramfs.cpio.gz',...Object.keys(inputs).filter(p=>p.startsWith(dirname(proof.runtime)+'/'))]);
+ server=createServer((req,res)=>{
+  for(const[k,v]of Object.entries({'Cross-Origin-Opener-Policy':'same-origin','Cross-Origin-Embedder-Policy':'require-corp','Cache-Control':'no-store'}))res.setHeader(k,v);
+  try{const path=decodeURIComponent(new URL(req.url,'http://localhost').pathname).slice(1);if(path===''){res.setHeader('Content-Type','text/html');res.end('<!doctype html><title>M3b diagnostic fixture</title>');return;}
+   if(!allowed.has(path)){res.writeHead(404);res.end();return;}const bytes=files.get(path);assert.ok(bytes);served[path]=inputs[path];res.setHeader('Content-Type',({'.mjs':'text/javascript','.js':'text/javascript','.wasm':'application/wasm'})[extname(path)]??'application/octet-stream');res.end(bytes);
+  }catch(e){rejectFatal(e);res.writeHead(500);res.end();}
+ });
+ await new Promise((ok,bad)=>{server.once('error',bad);server.listen(0,'127.0.0.1',ok);});
+ watchdog=setTimeout(()=>rejectFatal(Error('Host diagnostic deadline exceeded')),timeoutMs+20000);browser=await chromium.launch({headless:true,timeout:60000,executablePath:chrome.executable});
+ context=await browser.newContext();const page=await context.newPage();page.on('pageerror',e=>rejectFatal(e));page.on('crash',()=>rejectFatal(Error('Page crash')));browser.on('disconnected',()=>{if(!closing)rejectFatal(Error('Browser disconnected'));});
+ await page.exposeFunction('__recordM3bFixture',record);
+ await page.goto('http://127.0.0.1:'+server.address().port+'/',{timeout:60000});
+ report=await Promise.race([fatal,page.evaluate(async({runtime,fixture,enabled,timeoutMs})=>{
+  const {runGuest}=await import('/tests/m3b-xstate-v2/guest.mjs');const get=async p=>{const r=await fetch('/'+p);if(!r.ok)throw Error(p);return r.arrayBuffer();};const roms={};for(const n of ['bios-256k.bin','kvmvapic.bin','linuxboot_dma.bin'])roms[n]=await get('engine/qemu/pc-bios/'+n);
+  return runGuest({runtimeUrl:new URL('/'+runtime+'/qemu-system-x86_64.js',location.href).href,kernel:await get('assets/bun/amd64/vmlinuz-virt'),initramfs:await get(fixture+'/initramfs.cpio.gz'),roms,enabled,timeoutMs});
+ },{runtime:proof.runtime,fixture,enabled,timeoutMs})]);
+ await chain;if(logFailure)throw logFailure;assert.equal(report.status,'passed',report.failure);assert.equal(phase,'done');assert.equal(report.enabled,enabled);assert.deepEqual(report.arguments,guestArguments);
+ assert.equal(report.configuration.m3aEnabled,true);assert.equal(report.configuration.enabled,enabled);assert.equal(report.configuration.hotLimit,1500);assert.equal(report.configuration.flags,2);assert.equal(report.configuration.instanceLimit,12000);
+ assert.deepEqual(report.layout,layout);assert.equal(report.gates.length,45);assert.equal(report.signals.length,45);
+ assert.equal(xstateObservations.length,45);assert.equal(xstateObservations.at(-1).invocations,47168);
+ assert.equal(journalRows.map(r=>r.serialChunk??'').join(''),report.serial);
+ const raw=report.serial.replace(/\r/g,'');assert.ok(!/M3B_FAIL:|BUN_APP_FAILURE|Kernel panic/.test(raw));const lines=raw.split('\n');assert.equal(lines.filter(x=>x.startsWith('M3B_LAYOUT:')).length,1);assert.equal(lines.filter(x=>x.startsWith('M3B_PASS:')).length,1);
+ assert.ok(lines.every(x=>!x.startsWith('M3B_')||['M3B_LAYOUT:','M3B_GATE:','M3B_PASS:'].some(p=>x.startsWith(p))));assert.deepEqual(JSON.parse(lines.find(x=>x.startsWith('M3B_LAYOUT:')).slice(11)),layout);
+ assert.deepEqual(lines.filter(x=>x.startsWith('M3B_GATE:')).map(x=>JSON.parse(x.slice(9))),reference.gates);assert.deepEqual(JSON.parse(lines.find(x=>x.startsWith('M3B_PASS:')).slice(9)),reference.pass);
+ assert.deepEqual(lines.filter(x=>x.startsWith('M3X_FEATURES:')).map(x=>JSON.parse(x.slice(13))),[journalRows.find(r=>r.event==='gate').xstateFeatures]);
+ assert.deepEqual(lines.filter(x=>x.startsWith('M3X_CAPS:')).map(x=>JSON.parse(x.slice(9))),[journalRows.find(r=>r.event==='gate').xstateCaps]);
+ assert.deepEqual(lines.filter(x=>x.startsWith('M3X_STATE:')).map(x=>JSON.parse(x.slice(10))),journalRows.filter(r=>r.event==='gate').map(r=>r.xstate));
+ for(let i=0;i<45;i++){const row=report.gates[i],saved=journalRows.find(r=>r.event==='gate'&&r.gate.seq===i);const {ackHostMs,contHostMs,...before}=row;assert.deepEqual(before,saved);assert.equal(row.signalHostMs,report.signals[i]);assert.ok(row.readHostMs<=ackHostMs&&ackHostMs<=contHostMs);if(i)assert.ok(report.gates[i-1].ackHostMs<=row.signalHostMs);}
+ assert.deepEqual(report.startup,journalRows.find(r=>r.event==='startup'));assert.deepEqual(report.final,journalRows.find(r=>r.event==='complete'));
+ for(const path of [...browserSources,...assets,fixture+'/initramfs.cpio.gz',proof.runtime+'/qemu-system-x86_64.js',proof.runtime+'/qemu-system-x86_64.wasm'])assert.deepEqual(served[path],inputs[path]);report.browser=browser.version();
+}catch(e){report.status='failed';report.failure=String(e.stack??e);}
+finally{
+ clearTimeout(watchdog);closing=true;for(const close of [()=>context?.close(),()=>browser?.close(),async()=>{if(server){server.closeAllConnections();await new Promise(ok=>server.close(ok));}}])try{await close();}catch(e){report.status='failed';report.failure=(report.failure??'')+'\nCleanup: '+e;}
+ if(hostCondition)try{hostAfter=await observeHostCondition(hostCondition);}catch(e){report.status='failed';report.failure=(report.failure??'')+'\nHost condition: '+e;hostAfter=e.observation??null;}
+ if(chrome)try{assert.equal(await realpath(chrome.executable),chrome.binaryPath);assert.equal(sha(await readFile(chrome.binaryPath)),chrome.sha256);}catch(e){report.status='failed';report.failure=(report.failure??'')+'\nChrome identity changed: '+e;}
+ try{await chain;if(logFailure)throw logFailure;}catch(e){report.status='failed';report.failure=(report.failure??'')+'\nProgress: '+e;}if(journal)await journal.close();
+ report.inputRecheck=[];for(const [path,id]of Object.entries(inputs))try{assert.equal(sha(await readFile(resolve(root,path))),id.sha256);}catch(e){report.inputRecheck.push({path,error:String(e)});}
+ if(report.inputRecheck.length){report.status='failed';report.failure=(report.failure??'')+'\nInput changed';}
+ report.fixtureProvenance=fixtureProvenance;report.selectedExposure=partitions;report.xstateObservations=xstateObservations;report.xstateCaps=journalRows.find(r=>r.event==='gate')?.xstateCaps;report.hostCondition=hostCondition;report.hostBefore=hostBefore;report.hostAfter=hostAfter;report.chrome=chrome;report.schema=1;report.protocol=protocol;report.enabled=enabled;report.timingEligible=false;report.inputs=inputs;report.served=served;report.timeoutMs=timeoutMs;report.completedUtc=new Date().toISOString();report.openGates=openGates;report.runtimeProvenance=proof?{binding:proof.binding,sourceFingerprint:proof.sourceFingerprint,graph:proof.graph,objects:proof.objects}:null;
+ const serial=journalRows.map(r=>r.serialChunk??'').join('');await durable('serial.log',serial);delete report.serial;report.artifacts={serial:{path:'serial.log',sha256:sha(serial),bytes:Buffer.byteLength(serial)}};
+ if(journal){const data=await readFile(resolve(output,'progress.jsonl'));report.artifacts.progress={path:'progress.jsonl',sha256:sha(data),bytes:data.length,records:entries};}
+ await durable('report.json',report);console.log(JSON.stringify({status:report.status,output:relative(root,output),failure:report.failure}));
+}
+process.exitCode=report.status==='passed'?0:1;

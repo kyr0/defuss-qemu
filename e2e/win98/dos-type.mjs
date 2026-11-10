@@ -1,0 +1,15 @@
+import {attach, artifacts} from '../config.mjs';
+const text = process.env.TEXT;
+if (!text) throw Error('TEXT is required; focus a DOS prompt before running');
+const out = process.env.OUTPUT ?? artifacts + '/dos-command.png';
+const {browser,page} = await attach();
+if (!page) throw new Error('DOS page not found');
+const canvas = page.locator('#screen');
+await canvas.focus();
+await page.keyboard.press('Escape');
+await page.keyboard.press('Escape');
+await page.keyboard.type(text, { delay: 100 });
+await page.keyboard.press('Enter');
+await page.waitForTimeout(2000);
+await page.locator('#screen').screenshot({ path: out });
+process.exit(0);

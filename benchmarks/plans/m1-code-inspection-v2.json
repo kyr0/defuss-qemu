@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "id": "m1-code-inspection-v2",
+  "scope": "Stopped phase-end code inspection and crash-resumable orchestration validation; not performance confirmation",
+  "hypothesis": "The two most frequent compiled-user integer PCs contain the original dependent recurrence and backedge. Capture exact bytes under sampled raw CR3 after each phase before selecting a region candidate.",
+  "limitations": [
+    "Stopped phase-end bytes do not prove sampled-time code generations, process identity, or JSC tier.",
+    "Inspection adds stopped time and can perturb later phases; do not compare these timings as a production speedup.",
+    "The second observation restores the first capture and is dependent evidence."
+  ],
+  "inputs": [
+    "benchmarks/plans/m1-exploration-v1.json"
+  ],
+  "steps": [
+    {
+      "id": "code-capture",
+      "package": "artifacts/m1-profile-02/app.mjs.app",
+      "mode": "profile-on",
+      "snapshot": "capture",
+      "samplePeriod": 257,
+      "timeoutMs": 600000,
+      "captureCode": true
+    },
+    {
+      "id": "code-restore",
+      "package": "artifacts/m1-profile-02/app.mjs.app",
+      "mode": "profile-on",
+      "snapshot": "restore",
+      "captureStep": "code-capture",
+      "samplePeriod": 263,
+      "timeoutMs": 600000,
+      "captureCode": true
+    }
+  ],
+  "revision": "Numeric exclusive-create flags verified against actual pinned Emscripten FS; preserve original all-unresolved campaign01",
+  "previousCampaign": "artifacts/m1-code-campaign-01",
+  "fsValidation": "artifacts/m1-code-fs-validation-02.json"
+}

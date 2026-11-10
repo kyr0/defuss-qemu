@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "kind": "isolated-diagnostic-msg2-exposure",
+  "sources": {
+    "vm-adapter.mjs": {
+      "source": "benchmarks/harness/m2/vm-adapter.mjs",
+      "sourceSha256": "e8558f50b3dade500c204a9ad557130c6770e7b12d46b27a99edc7e0d832d185",
+      "derivedSha256": "34b2f33b1e4cb3ffe5b2bb59f461c8d89bce2d3b166797d9fc02ad0189f5f115",
+      "changes": [
+        "// Diagnostic-only adapter",
+        "if(helperProfiling)throw Error('M2 timing forbids diagnostic profiling');",
+        "let mod, port, captured = !!snapshot, readyDone = false, closed = false, timer, consoleTail = '';",
+        "if(typeof m._defuss_m2_msg2_counts==='function'||typeof m._defuss_m1_abi==='function')throw Error('Diagnostic runtime cannot enter timing');",
+        "async pause() { await qmp.send('stop'); const status = await qmp.send('query-status'); if (status.running) throw Error('VM did not stop'); },",
+        "async resume() { await qmp.send('cont'); },",
+        "stats() { return {jitPool: mod.pcJitPool?.() ?? null}; },"
+      ]
+    },
+    "browser.mjs": {
+      "source": "benchmarks/harness/m2/browser.mjs",
+      "sourceSha256": "d058ade2c0c568739e74b4ddd0aafe4acaafa31f855b042a63e0c13efe0d9d63",
+      "derivedSha256": "1cde46064f694f4bd34705419b5755cd26d1e8f3bd2a3e2f915f497bcb88f248",
+      "changes": [
+        "import {startBunApp}",
+        "if(mode!=='baseline'||captureCode)throw Error('M2 timing must be uninstrumented');",
+        "const report={schema:1,status:'running',mode",
+        "'Uninstrumented timing; three batches in one VM are correlated, not independent boots.'",
+        "if(event.event==='initialized')counters=phaseCounters(vm,mode,manifest,samplePeriod);",
+        "counters.begin();phase={event};",
+        "row.runtimeStats=vm.stats(); // Stopped observation, outside the timed endpoint.",
+        "event.readCompleteHostMs=clock();"
+      ]
+    },
+    "run.mjs": {
+      "source": "benchmarks/harness/m2/run.mjs",
+      "sourceSha256": "d72b21488f400033171080166826f0b85f49375732218a82d261ee9500c68e21",
+      "derivedSha256": "7db38cccd5b9504dbec5b15b300438f27cfa15f47044eb6cd39e40bfa19ef109",
+      "changes": [
+        "// One fresh Chrome VM. Run invocations serially; reports and caches never overwrite.",
+        "import {SnapshotUpload",
+        "protocol:'defuss-m1-v1'",
+        "scope:'Uninstrumented M2 observation; independent pairing and statistical scope belong to the frozen campaign plan.'",
+        "await hashInputs(resolve(root,'benchmarks/harness/m2'));",
+        "assert.equal(values.mode,'baseline','M2 timing disables diagnostics');",
+        "assert.equal(values['capture-code'],false,'M2 timing disables code inspection');",
+        "const {run}=await import('/benchmarks/harness/m2/browser.mjs');"
+      ],
+      "additionalChanges": [
+        "Require original M1 bundle and initramfs hashes from exposure.mjs"
+      ]
+    }
+  },
+  "guestSourcesUnchanged": [
+    "benchmarks/harness/m1/driver.ts",
+    "benchmarks/harness/m1/protocol.mjs",
+    "benchmarks/workload/operations.ts"
+  ]
+}

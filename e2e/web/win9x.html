@@ -1,0 +1,75 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<link rel="icon" href="data:,">
+<title>defuss-vm · Windows 95 / 98 test PC</title><style>
+body{font:16px/1.45 system-ui;background:#111820;color:#f1f4fa;max-width:60rem;margin:auto;padding:1.5rem}a{color:#98cdff}
+fieldset{display:grid;gap:.6rem;margin:1rem 0;border:1px solid #637383}label{display:flex;align-items:center;gap:1em;justify-content:space-between}
+select,input,button{font:inherit}button{margin:.15rem;padding:.35em .8em}canvas{max-width:100%;border:0;outline:1px solid #8998aa;padding:0;height:auto;touch-action:none;background:#000;image-rendering:pixelated;display:block}
+canvas[data-pointer="tablet"],canvas[data-pointer="captured"]{cursor:none}[hidden]{display:none!important}details>summary{cursor:pointer}#share-plan{max-height:14em;overflow:auto;white-space:pre-wrap}#error{color:#ffb4a6;white-space:pre-wrap}small{color:#c2d3e5}.screen-viewport{width:100%;display:flex;align-items:center;justify-content:center;min-height:0}.screen-toolbar{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;padding:.3rem}.screen-shell:fullscreen{background:#080b10;display:flex;flex-direction:column;width:100vw;height:100vh;padding:0}.screen-shell:fullscreen .screen-viewport{flex:1;overflow:hidden}.screen-shell canvas{flex:none;max-width:none;image-rendering:pixelated}.screen-shell:fullscreen .screen-toolbar{flex:none}#fullscreen-status{font-size:.85rem}</style>
+<h1>defuss-vm · Windows 95 / 98 test PC</h1>
+<p>Boot your own local installation media or an installed raw IDE disk. The PC has one x86 CPU, 512 MiB of RAM and a 512 MiB translation cache by default. Windows selects the video mode through its display driver. Cirrus supports tested modes through 1280×1024; Standard VGA supports tested 1920×1080 with a suitable guest driver.</p>
+<p>Use your own installed raw disk or matching installation media. This test page does not include a Windows image.</p>
+<fieldset id="media"><legend>Local media</legend>
+<label>IDE hard disk (.img or legacy .raw) <input id="disk" type="file" accept=".img,.raw,.ima,.bin,application/octet-stream"></label>
+<details id="grow"><summary>Grow system disk · FAT16 / FAT32</summary>
+<p>Before boot, select a cleanly shut down raw system disk above. Growing creates a verified copy for C:. The source file stays intact.</p>
+<label>New total disk size (MiB) <input id="grow-target" type="number" value="768" min="8" max="2047" step="1"></label>
+<div><button id="grow-inspect">Inspect disk</button> <button id="grow-run">Grow and use copy</button> <button id="grow-cancel">Cancel</button></div>
+<div><button id="grow-download">Download grown .img</button> <button id="grow-original">Use original</button></div>
+<small>Supports one primary FAT16 or FAT32 partition in an MBR disk, up to 2047 MiB. Download the copy before closing the tab.</small>
+<p id="grow-status" role="status"></p></details><small id="grow-active" role="status"></small>
+<label>Blank disk if no file is selected <select id="size"><option>128</option><option>256</option><option selected>512</option><option>1024</option><option>1536</option><option>2047</option></select> MiB</label>
+<label>CD-ROM connection <select id="cd-channel"><option value="auto">Auto · primary slave if free</option><option value="primary">Primary IDE slave</option><option value="secondary">Secondary IDE master (v0.5.1 layout)</option></select></label>
+<label>Translation cache <select id="tb-cache"><option value="128">128 MiB</option><option value="256">256 MiB</option><option value="384">384 MiB</option><option value="512" selected>512 MiB</option><option value="64">64 MiB</option><option value="32">32 MiB (previous default)</option></select></label>
+<label>Sound card <select id="sound-card"><option value="off">Off</option><option value="sb16" selected>Sound Blaster 16 · playback</option><option value="ac97">Intel AC’97 · playback and recording</option><option value="dual">SB16 + AC’97 · both devices</option></select></label>
+<label>Audio buffer target <select id="sound-target"><option>20</option><option selected>30</option><option>40</option></select> ms</label>
+<label>Guest RAM <select id="ram"><option>64</option><option>128</option><option>256</option><option>384</option><option selected>512</option></select> MiB</label>
+<label>JIT promotion <select id="hot-limit"><option value="1500">Standard · 1500 executions</option><option value="256">Earlier · 256 executions (experimental)</option></select></label>
+<label>Helper profiler <input id="helpers" type="checkbox"> Enable before boot · adds overhead</label>
+<label>CPU model <select id="cpu"><option value="auto">Auto · Haswell (Win98 SE)</option><option value="max" selected>Maximum TCG features</option><option value="core2duo">Core 2 Duo</option><option value="pentium3">Pentium III</option><option value="pentium2">Pentium II</option><option value="pentium">Pentium · legacy Setup</option></select></label>
+<label>Video adapter <select id="video"><option value="cirrus">Cirrus Logic GD5446 PCI · Windows 98 driver</option><option value="std">Standard VGA / Bochs VBE · VMDisp9x driver</option></select></label>
+<label>Mouse <select id="pointer"><option value="auto">Auto · USB tablet with PS/2 fallback</option><option value="ps2">Captured PS/2 only</option></select></label>
+<label>Runtime profile <select id="compat"><option value="default">Standard</option><option value="conservative">Diagnostic · delayed JIT · REP batching off</option></select></label>
+<small id="runtime-settings" role="status" aria-live="polite"></small>
+<small id="runtime-diagnostic" hidden>Diagnostic mode overrides JIT promotion to 65,535 executions and disables 16/32-bit REP batching and pressure admission. Use Standard for normal operation; compare the same workload with profiling off.</small>
+<label>Boot first from <select id="boot"><option value="a">Floppy (A:)</option><option value="c" selected>IDE disk (C:)</option><option value="d">Bootable CD</option></select></label>
+</fieldset>
+<fieldset id="removable"><legend>Removable drives · load before or after boot</legend>
+<label>Floppy A: <input id="floppy" type="file" accept=".img,.ima,.raw,.iso,.dsk,.flp,.bin"></label>
+<div><button id="floppy-eject">Eject floppy</button> <small id="floppy-status" role="status">Empty</small></div>
+<label>IDE CD-ROM <input id="cdrom" type="file" accept=".iso,.img"></label>
+<div><button id="cdrom-eject">Eject CD</button> <small id="cdrom-status" role="status">Empty</small></div>
+<div><button id="check-cd" disabled>Check CD-ROM attachment</button> <small id="cd-device" role="status">Hardware status available after boot</small></div>
+<small>Choose another file to swap media. Both drives are read-only. A: accepts a raw floppy or the embedded floppy from an x86 floppy-emulation boot CD. For a normal data or boot CD, use the CD-ROM picker. If Windows has no drive letter after attachment, check CDROM and Hard disk controllers in Device Manager. Pure DOS needs a CD-ROM driver and MSCDEX.</small></fieldset>
+<details id="share-config"><summary>Secondary IDE storage · USB folder or native disk</summary><fieldset id="share-select"><legend>Attach before boot</legend>
+<label>Allow guest writes <input type="checkbox" id="share-writable"></label>
+<div><button id="pick-share">Select USB / host folder</button> <button id="unmount-share">Detach</button></div>
+<small>Use a regular browser profile for recoverable snapshots. Folder contents become a private FAT16 snapshot. Select a subfolder if the browser blocks the root of a volume.</small>
+<div><button id="list-shares">List saved snapshots</button> <select id="saved-shares"><option value="">Select checkpoint</option></select>
+<button id="restore-share">Restore</button> <button id="forget-share">Discard snapshot</button></div>
+<label>Native bridge URL <input id="bridge-url" type="password" autocomplete="off" placeholder="ws://127.0.0.1:8765/#…"></label>
+<div><button id="connect-share">Connect native disk</button></div></fieldset>
+<p id="share-status" role="status"></p></details><button id="start">Start PC</button><button disabled id="save">Download IDE disk (.img)</button><button disabled id="cad">Ctrl + Alt + Del</button>
+<details id="audio-panel"><summary>Browser audio · speakers and microphone</summary><fieldset><legend>Audio routing</legend>
+<div><button id="audio-resume">Resume audio</button> <label>Mute speakers <input id="mute" type="checkbox"></label></div>
+<label>Speakers <select id="audio-sink"><option value="">System default</option></select></label>
+<div><button id="pick-sink">Choose output…</button> <button id="audio-devices">Refresh devices</button></div>
+<label>Microphone <select id="mic-device"><option value="">System default</option></select></label>
+<div><button id="mic-start">Enable microphone</button> <button id="mic-stop">Stop microphone</button></div>
+<small>SB16 is enabled by default. Playback starts with Start PC; no microphone permission is needed. For an existing Windows installation, use Control Panel → Add New Hardware if it does not detect the ISA card. Choose Creative Labs Sound Blaster 16 at A220 I5 D1 H5. For recording, choose AC’97 or both devices and install the AC’97 guest driver. Export trace JSON for audio counters.</small>
+<p id="sound-hardware" role="status">SB16 selected · hardware checked after boot</p><span id="sound-status" role="status">Audio off</span><small id="sound-meter"></small></fieldset></details>
+<fieldset><legend>Display and diagnostics</legend>
+<label>Display <select id="display"><option value="auto">Auto · adapt to screen activity</option><option value="responsive">Responsive · prioritize VGA</option><option value="copy">File copy · 2 captures/s max</option><option value="paused">Pause display · guest keeps running</option></select></label>
+<label>Auto / Responsive display limit <select id="display-hz"><option value="20">20 fps</option><option value="30" selected>30 fps</option><option value="60">60 fps · higher CPU cost</option></select></label>
+<label>TCG timing + instruction-pair sampling (adds overhead) <input id="deep" type="checkbox"></label>
+<small id="helper-status" role="status">Enable Helper profiler before boot for named compiled-helper timings. Leave profiling off for speed comparisons.</small>
+<div><button id="record" aria-pressed="false">Record trace</button><button id="trace-download">Download trace JSON</button> <span id="trace-status" role="status">Idle</span></div>
+<small>MMU diagnostics use nominal 1/256 pseudo-random sampling by default. Raw sample counts and selected bytes are not full totals; the JSON records the actual sampling mode. Detailed TCG profiling remains optional.</small>
+<small>Recording can start before boot. Download is available at any time, including after a failed start. The trace records device counters, display/input timings and, with TCG sampling enabled, interpreter opcodes/pairs and JIT compilation time. The preboot helper profiler adds compiled-helper counts and sampled timings. TCG opcodes are emulator operations, not x86 assembly. Audio traces include frame counts, queue depths and peak levels. They omit audio samples, device names and typed keys.</small></fieldset>
+<fieldset id="share-panel" hidden><legend>Secondary disk actions</legend>
+<small>Close guest files and flush or shut down Windows first. Preview pauses a running VM. Only listed creates and updates are applied. Guest deletions leave host files intact.</small>
+<div><button id="sync-preview">Preview changes</button> <button id="sync-apply">Apply to host folder</button>
+<button id="sync-cancel">Close preview / resume</button> <button id="sync-reselect">Reselect source</button>
+<button id="share-export">Export working FAT disk</button> <button id="end-share">End storage session</button></div><pre id="share-plan" aria-live="polite"></pre></fieldset>
+<p id="status" role="status">Stopped</p><p><span id="geometry">Waiting for video</span> · <span id="pointer-status">Mouse available after start</span></p><div id="screen-shell" class="screen-shell"><div class="screen-toolbar"><button id="fullscreen" aria-pressed="false">Fullscreen</button><small>Pixelated rendering · Esc exits fullscreen</small><span id="fullscreen-status" role="status"></span></div><div class="screen-viewport"><canvas id="screen" tabindex="0" aria-label="Guest VGA display" width="640" height="400"></canvas></div></div>
+<small>In Windows, use Display Properties → Settings to choose resolution and color depth. If only 16 colors are offered, install the Cirrus Logic 5446 PCI driver from the Windows media or, for Standard VGA, <a href="https://github.com/JHRobotics/vmdisp9x">VMDisp9x</a>. Click the screen to type. Disk changes live in this tab. Download the disk before closing it. For a non-bootable retail CD, attach a startup floppy with a DOS CD-ROM driver.</small><pre id="error"></pre>
+<script type="module" src="./win9x-ui.mjs"></script></html>

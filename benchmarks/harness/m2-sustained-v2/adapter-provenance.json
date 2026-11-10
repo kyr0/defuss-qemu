@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "scope": "Isolated sustained-v2 derivatives; original M1 and M2 files remain unchanged",
+  "sources": {
+    "benchmarks/harness/m2/run.mjs": "d72b21488f400033171080166826f0b85f49375732218a82d261ee9500c68e21",
+    "benchmarks/harness/m2/browser.mjs": "d058ade2c0c568739e74b4ddd0aafe4acaafa31f855b042a63e0c13efe0d9d63",
+    "benchmarks/harness/m2/vm-adapter.mjs": "e8558f50b3dade500c204a9ad557130c6770e7b12d46b27a99edc7e0d832d185",
+    "benchmarks/harness/m2/campaign.mjs": "cc45139eb7d428917f4459ad0c7304994258b088c8c8ac549840dc081ebabd80",
+    "benchmarks/harness/m2/plan.mjs": "74f13ab21b0e141143ad76ecdf7eea4678790ec48a3207005f4f75b9f682dde4",
+    "benchmarks/harness/m2/analyze.mjs": "32a5352cf5307d4a714c21e94da12f42b4d28fbfde0e73869c53db7bf2f6c5fd",
+    "benchmarks/harness/m2/package.mjs": "41bc200646b1b4cd51f8eee8188ae2c82aa1a776c7ad5fcc7c7e27c34f5a02a9",
+    "benchmarks/harness/m2/campaign.test.mjs": "f45d751f7da8f04d952c8f56676dfaeaf89d233b329e01716364fe73e44b15a3",
+    "benchmarks/harness/m1/driver.ts": "429c08005a3e36ed81d7098240c93b5b5c78aedd2f2dcc8df5e66dd5c6bdeb6c",
+    "benchmarks/harness/m1/protocol.mjs": "fa9423577d8ac4b189f3b96d2f98de0a84a9b8ace909c9a93cc98d89f0b6aaad",
+    "benchmarks/harness/m1/protocol.test.mjs": "e56010fdf306e027003b8ce00061809cc6e8332fd931e1a86920b3b4bd868b9b"
+  }
+}

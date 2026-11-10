@@ -1,0 +1,5 @@
+export {sha,inside,verifyInputs,durable,json,readBound,identity} from '../m3b-code-attribution/identity.mjs';
+export const sources=[...['config.mjs','guest.mjs','oracle.mjs','identity.mjs','run.mjs','campaign.py','analyze.py','freeze.py','test.mjs'].map(x=>'benchmarks/harness/m3b-timing/'+x),
+'benchmarks/harness/m3b-code-attribution/config.mjs','benchmarks/harness/m3b-code-attribution/identity.mjs','benchmarks/harness/m1/protocol.mjs',
+'host/browser/qmp.mjs','host/browser/machine.mjs','packaging/bun-app/serial.mjs','packaging/bun-app/vm.mjs','packaging/bun-app/snapshots.mjs','tests/m3b-fallthrough/reader.mjs',
+'benchmarks/harness/m2-sustained-v2/host-condition.mjs','scripts/with-tmp.py','tmp/audit-owned-chrome-01.py','experiments/m3b-timing/prepare.py','experiments/m3b-timing/DESIGN.md','experiments/m3b-timing/README.md','package.json','package-lock.json','node_modules/playwright/package.json','node_modules/playwright-core/package.json'];

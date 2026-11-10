@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {Oracle} from './oracle.mjs';
+const original=(await readFile('artifacts/m3b-bun-code-attribution-off-01/progress.jsonl','utf8')).trimEnd().split('\n').map(JSON.parse);
+function fixture(arm='off') {return original.map((r,i)=>({...structuredClone(r),hostMs:i*10+3,nativeStatus:arm==='original'?null:arm==='on'?63:62,startHostMs:i===0?0:undefined,markerHostMs:i*10+2,previousAck:i<2?null:{seq:i-2,hostMs:(i-1)*10+4}}));}
+function replay(rows,arm='off'){const o=new Oracle({arm});for(const row of rows)o.accept(row);return o.finish();}
+test('retained valid guest lifecycle replays in all three modes with exact monotonic timing',()=>{for(const arm of ['original','off','on']){const r=replay(fixture(arm),arm);assert.equal(r.results.length,12);assert.ok(r.results.every(x=>x.hostMs===8&&x.resultToStopMs===1));assert.equal(r.horizonMs,713);}});
+test('reject native profile fault and wrong ACK ownership',()=>{let rows=fixture();rows[10].nativeStatus=126;assert.throws(()=>replay(rows));rows=fixture();rows[10].previousAck.seq--;assert.throws(()=>replay(rows));});
+test('reject missing or corrupt result, negative interval and missing terminal record',()=>{let rows=fixture();const i=rows.findIndex(r=>r.gate?.event==='result');rows[i].gate.value='wrong';assert.throws(()=>replay(rows));rows=fixture();rows[i].previousAck.hostMs=rows[i].markerHostMs+1;assert.throws(()=>replay(rows));assert.throws(()=>replay(fixture().slice(0,-1)));});

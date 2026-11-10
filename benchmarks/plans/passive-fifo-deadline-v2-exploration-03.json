@@ -1,0 +1,512 @@
+{
+  "schema": 1,
+  "id": "passive-fifo-finite-deadline-v2-repeat-3",
+  "experiment": "passive-fifo-v1",
+  "kind": "exploration",
+  "createdUtc": "2026-11-07T15:18:06.049Z",
+  "packages": {
+    "control": {
+      "path": "artifacts/passive-fifo-package-off-01",
+      "manifest": {
+        "schema": 1,
+        "os": "linux",
+        "architecture": "amd64",
+        "image": "oven/bun@sha256:b14d4eb5d84af31d532380ad42fbc8243936bbe23e2b85c5f740efbd845fe6f2",
+        "bunVersion": "1.4.4",
+        "appSha256": "f9ed5327b4549350c4ddd554c6ada074487a45924435ded873abe46e0aa7d668",
+        "vm": {
+          "machine": "pc,acpi=off",
+          "cpu": "max",
+          "ramMiB": 512,
+          "smp": 1,
+          "tbMiB": 128,
+          "hotLimit": 1500,
+          "runtimeFlags": 3
+        },
+        "snapshot": {
+          "enabled": true,
+          "protocol": "com1-ready-v1",
+          "readyByte": 49,
+          "readyMode": "manual",
+          "port": "/dev/ttyS0",
+          "console": "/dev/ttyS1"
+        },
+        "artifacts": {
+          "app.mjs": {
+            "sha256": "f9ed5327b4549350c4ddd554c6ada074487a45924435ded873abe46e0aa7d668",
+            "bytes": 7509
+          },
+          "initramfs.cpio.gz": {
+            "sha256": "708d608fc040b5fed46ef78938a3808fd862cd5113c82799512d1c4d7dedc13d",
+            "bytes": 66901579
+          },
+          "kernel": {
+            "sha256": "8ce908a8cb28d55adcacacf8a16609fa400e07a8826f0084ae5b13b8cb91b9ab",
+            "bytes": 11838464
+          },
+          "rom/bios-256k.bin": {
+            "sha256": "ae6f6aa973aaccc143f57aa960fb035fd9de4daee4ad0cd713322f8c259e7650",
+            "bytes": 262144
+          },
+          "rom/kvmvapic.bin": {
+            "sha256": "cdf057a71b07e3b52b19cbe210bdefa59250d01a9810b960f7fe1f98eed95a27",
+            "bytes": 9216
+          },
+          "rom/linuxboot_dma.bin": {
+            "sha256": "9c49e255340c78fc12e54ed043462bca02fb7fca29b7cfab62ff88a5344b6950",
+            "bytes": 1536
+          },
+          "runtime/qemu-system-x86_64.js": {
+            "sha256": "428d465c62f6e700908a2ffefc4946eac32735c3a2babc78a00662a6e0493e38",
+            "bytes": 190074
+          },
+          "runtime/qemu-system-x86_64.wasm": {
+            "sha256": "5d7214930c5167519c64683ad84c3d419783b83dc75d325fa07c3134bf0bdfca",
+            "bytes": 13256561
+          }
+        },
+        "experiment": {
+          "name": "passive-fifo-v1",
+          "enabled": false
+        },
+        "benchmark": {
+          "protocol": "defuss-m2-sustained-v2",
+          "measurementProtocol": "defuss-passive-fifo-finite-v1"
+        },
+        "compatibilitySha256": "616fa36d22615179d027ffd246bead9d11e8feef2937f996815ee692a973fb50",
+        "generation": "616fa36d22615179d027ffd246bead9d11e8feef2937f996815ee692a973fb50"
+      },
+      "manifestSha256": "91e69e9c852b4f2a4f832e6f9044b2bf6a5abee5f60b6a57be2e66d77d285934"
+    },
+    "candidate": {
+      "path": "artifacts/passive-fifo-package-on-01",
+      "manifest": {
+        "schema": 1,
+        "os": "linux",
+        "architecture": "amd64",
+        "image": "oven/bun@sha256:b14d4eb5d84af31d532380ad42fbc8243936bbe23e2b85c5f740efbd845fe6f2",
+        "bunVersion": "1.4.4",
+        "appSha256": "f9ed5327b4549350c4ddd554c6ada074487a45924435ded873abe46e0aa7d668",
+        "vm": {
+          "machine": "pc,acpi=off",
+          "cpu": "max",
+          "ramMiB": 512,
+          "smp": 1,
+          "tbMiB": 128,
+          "hotLimit": 1500,
+          "runtimeFlags": 3
+        },
+        "snapshot": {
+          "enabled": true,
+          "protocol": "com1-ready-v1",
+          "readyByte": 49,
+          "readyMode": "manual",
+          "port": "/dev/ttyS0",
+          "console": "/dev/ttyS1"
+        },
+        "artifacts": {
+          "app.mjs": {
+            "sha256": "f9ed5327b4549350c4ddd554c6ada074487a45924435ded873abe46e0aa7d668",
+            "bytes": 7509
+          },
+          "initramfs.cpio.gz": {
+            "sha256": "708d608fc040b5fed46ef78938a3808fd862cd5113c82799512d1c4d7dedc13d",
+            "bytes": 66901579
+          },
+          "kernel": {
+            "sha256": "8ce908a8cb28d55adcacacf8a16609fa400e07a8826f0084ae5b13b8cb91b9ab",
+            "bytes": 11838464
+          },
+          "rom/bios-256k.bin": {
+            "sha256": "ae6f6aa973aaccc143f57aa960fb035fd9de4daee4ad0cd713322f8c259e7650",
+            "bytes": 262144
+          },
+          "rom/kvmvapic.bin": {
+            "sha256": "cdf057a71b07e3b52b19cbe210bdefa59250d01a9810b960f7fe1f98eed95a27",
+            "bytes": 9216
+          },
+          "rom/linuxboot_dma.bin": {
+            "sha256": "9c49e255340c78fc12e54ed043462bca02fb7fca29b7cfab62ff88a5344b6950",
+            "bytes": 1536
+          },
+          "runtime/qemu-system-x86_64.js": {
+            "sha256": "428d465c62f6e700908a2ffefc4946eac32735c3a2babc78a00662a6e0493e38",
+            "bytes": 190074
+          },
+          "runtime/qemu-system-x86_64.wasm": {
+            "sha256": "5d7214930c5167519c64683ad84c3d419783b83dc75d325fa07c3134bf0bdfca",
+            "bytes": 13256561
+          }
+        },
+        "experiment": {
+          "name": "passive-fifo-v1",
+          "enabled": true
+        },
+        "benchmark": {
+          "protocol": "defuss-m2-sustained-v2",
+          "measurementProtocol": "defuss-passive-fifo-finite-v1"
+        },
+        "compatibilitySha256": "3168b28f4aacccd8fffcaf55a9a78de61498b3ba2805ee11f3a962e7faf773fb",
+        "generation": "3168b28f4aacccd8fffcaf55a9a78de61498b3ba2805ee11f3a962e7faf773fb"
+      },
+      "manifestSha256": "c34c3e0cad5f4399113b7a0e005127de28869b1a82eb7391ce531305e7e43feb"
+    }
+  },
+  "pairs": 4,
+  "steps": [
+    {
+      "id": "pair-01-off",
+      "pair": 1,
+      "enabled": false,
+      "package": "artifacts/passive-fifo-package-off-01",
+      "mode": "baseline",
+      "snapshot": "capture",
+      "samplePeriod": 257,
+      "timeoutMs": 1800000
+    },
+    {
+      "id": "pair-01-on",
+      "pair": 1,
+      "enabled": true,
+      "package": "artifacts/passive-fifo-package-on-01",
+      "mode": "baseline",
+      "snapshot": "capture",
+      "samplePeriod": 257,
+      "timeoutMs": 1800000
+    },
+    {
+      "id": "pair-02-on",
+      "pair": 2,
+      "enabled": true,
+      "package": "artifacts/passive-fifo-package-on-01",
+      "mode": "baseline",
+      "snapshot": "capture",
+      "samplePeriod": 257,
+      "timeoutMs": 1800000
+    },
+    {
+      "id": "pair-02-off",
+      "pair": 2,
+      "enabled": false,
+      "package": "artifacts/passive-fifo-package-off-01",
+      "mode": "baseline",
+      "snapshot": "capture",
+      "samplePeriod": 257,
+      "timeoutMs": 1800000
+    },
+    {
+      "id": "pair-03-off",
+      "pair": 3,
+      "enabled": false,
+      "package": "artifacts/passive-fifo-package-off-01",
+      "mode": "baseline",
+      "snapshot": "capture",
+      "samplePeriod": 257,
+      "timeoutMs": 1800000
+    },
+    {
+      "id": "pair-03-on",
+      "pair": 3,
+      "enabled": true,
+      "package": "artifacts/passive-fifo-package-on-01",
+      "mode": "baseline",
+      "snapshot": "capture",
+      "samplePeriod": 257,
+      "timeoutMs": 1800000
+    },
+    {
+      "id": "pair-04-on",
+      "pair": 4,
+      "enabled": true,
+      "package": "artifacts/passive-fifo-package-on-01",
+      "mode": "baseline",
+      "snapshot": "capture",
+      "samplePeriod": 257,
+      "timeoutMs": 1800000
+    },
+    {
+      "id": "pair-04-off",
+      "pair": 4,
+      "enabled": false,
+      "package": "artifacts/passive-fifo-package-off-01",
+      "mode": "baseline",
+      "snapshot": "capture",
+      "samplePeriod": 257,
+      "timeoutMs": 1800000
+    }
+  ],
+  "inputs": [
+    "docs/decisions/passive-fifo-finite-horizon-design-01.md",
+    "artifacts/passive-fifo-finite-horizon-review-01/review.json",
+    "artifacts/passive-fifo-finite-v1-source-01",
+    "artifacts/passive-fifo-finite-v1-source-review-01/review.json",
+    "artifacts/m2-sustained-v2-bundle-01/app.mjs",
+    "artifacts/m2-sustained-v2-bundle-01/app.mjs.build.json",
+    "artifacts/passive-fifo-overlay-source-01",
+    "artifacts/passive-fifo-overlay-source-review-01/review.json",
+    "artifacts/passive-fifo-build-review-tools-01",
+    "artifacts/passive-fifo-performance-build-01/build-report.json",
+    "artifacts/passive-fifo-performance-source-01/source-fifo-overlay.json",
+    "artifacts/passive-fifo-performance-build-01/source-recheck.json",
+    "artifacts/passive-fifo-performance-build-review-01/review.json",
+    "artifacts/passive-fifo-performance-build-review-01/inventory.json",
+    "artifacts/passive-fifo-validation-source-01",
+    "artifacts/passive-fifo-validation-source-review-01/review.json",
+    "artifacts/passive-fifo-validation-review-source-01",
+    "artifacts/passive-fifo-validation-reviewer-source-review-01/review.json",
+    "experiments/passive-fifo-validation-review",
+    "experiments/m2-sha-msg2/review-sustained-v2.py",
+    "artifacts/passive-fifo-finite-review-source-01",
+    "artifacts/passive-fifo-finite-reviewer-source-review-01/review.json",
+    "experiments/passive-fifo-finite-review",
+    "artifacts/passive-fifo-heldout-off-capture-01/report.json",
+    "artifacts/passive-fifo-heldout-off-restore-01/report.json",
+    "artifacts/passive-fifo-heldout-on-capture-01/report.json",
+    "artifacts/passive-fifo-heldout-on-restore-01/report.json",
+    "artifacts/passive-fifo-heldout-review-01/review.json",
+    "benchmarks/plans/passive-fifo-resource-01.json",
+    "artifacts/passive-fifo-resource-off-01/report.json",
+    "artifacts/passive-fifo-resource-on-01/report.json",
+    "artifacts/passive-fifo-resource-analysis-01/analysis.json",
+    "artifacts/passive-fifo-resource-review-01/review.json",
+    "artifacts/passive-fifo-fixture-source-02",
+    "artifacts/passive-fifo-fixture-source-review-02/review.json",
+    "artifacts/passive-fifo-combined-fixture-01/build-report.json",
+    "artifacts/passive-fifo-combined-image-review-01/review.json",
+    "artifacts/passive-fifo-diagnostic-binding-01.json",
+    "artifacts/passive-fifo-diagnostic-build-01/build-report.json",
+    "artifacts/passive-fifo-diagnostic-build-01/source-recheck.json",
+    "artifacts/passive-fifo-diagnostic-source-01/source-fifo-overlay.json",
+    "artifacts/passive-fifo-diagnostic-build-review-01/review.json",
+    "artifacts/passive-fifo-diagnostic-build-review-01/inventory.json",
+    "artifacts/passive-fifo-combined-review-tools-01",
+    "tests/passive-fifo",
+    "tests/regions-pressure/jit.mjs",
+    "artifacts/passive-fifo-combined-off-02/report.json",
+    "artifacts/passive-fifo-combined-on-02/report.json",
+    "artifacts/passive-fifo-combined-review-01/review.json",
+    "artifacts/passive-fifo-finite-prerequisites-01.json",
+    "artifacts/passive-fifo-timing-repetitions-01.json",
+    "artifacts/passive-fifo-deadline-v2-source-01",
+    "artifacts/passive-fifo-deadline-v2-source-review-01/review.json",
+    "artifacts/passive-fifo-finite-incomplete-review-01",
+    "artifacts/passive-fifo-timing-repetition-commands-01.json",
+    "artifacts/passive-fifo-deadline-amendment-01.json",
+    "benchmarks/plans/passive-fifo-finite-exploration-01.json",
+    "artifacts/passive-fifo-finite-exploration-01/frozen.json",
+    "artifacts/passive-fifo-finite-exploration-01/invalid-completed-observation.json",
+    "benchmarks/plans/passive-fifo-finite-exploration-02.json",
+    "benchmarks/plans/passive-fifo-finite-exploration-03.json"
+  ],
+  "selection": null,
+  "orchestration": "passive-fifo-finite-deadline-v2",
+  "executionPolicyRule": {
+    "revision": "passive-fifo-finite-deadline-v2",
+    "allowedTimeoutMs": [
+      600000,
+      1800000
+    ],
+    "hostGraceMs": 20000,
+    "scope": "Only requested future exploratory repetitions02/03. Same finite-v1 measurement; failed set01 remains permanently invalid. No confirmation or causal load claim."
+  },
+  "executionPolicy": {
+    "schema": 1,
+    "revision": "passive-fifo-finite-deadline-v2",
+    "timeoutMs": 1800000,
+    "hostGraceMs": 20000,
+    "repetition": 3,
+    "planPath": "benchmarks/plans/passive-fifo-deadline-v2-exploration-03.json",
+    "amendment": {
+      "path": "artifacts/passive-fifo-deadline-amendment-01.json",
+      "sha256": "1edd9eafcc3df1525718bb691d9cd637f005d2385acdb9f04ad1e78eee86d5ca"
+    }
+  },
+  "hypothesis": "Passive FIFO retirement reduces the full fixed-workload horizon by at least5%, with all52-phase sum and four workload totals within10%, and unchanged resource/startup/service margins.",
+  "protocol": "defuss-passive-fifo-finite-v1",
+  "guestProtocol": "defuss-m2-sustained-v2",
+  "horizonRule": {
+    "clock": "browser performance.now relative to one origin; raw binary64 milliseconds retained",
+    "start": "Immediately before startBunApp invocation, before asset reads or runtime factory initialization",
+    "end": "Complete gate readCompleteHostMs after confirmed pause, protocol and effective-policy validation, before final ACK",
+    "phases": 52,
+    "preludePhases": 20,
+    "subsequentPhases": 32,
+    "iterationsPerPhase": 100,
+    "partitionAbsoluteToleranceMs": 0.000001,
+    "partition": "prefix + all52 ACK-to-result intervals + all51 intervening gaps + suffix; no subtraction or discarded interval",
+    "failure": "Any post-start failure or unknown start invalidates the campaign; only durably proven pre-start failure may be replaced"
+  },
+  "bootstrapRule": {
+    "prng": "xorshift32: x^=x<<13; x^=x>>>17; x^=x<<5; unsigned/2^32",
+    "quantile": "Sorted draw index floor(p*(draws-1))",
+    "unit": "Whole paired log-ratio; identical resampled pair indices for every endpoint",
+    "primaryAlpha": 0.01,
+    "secondaryOneSidedAlpha": 0.002,
+    "readyOneSidedAlpha": 0.01,
+    "serviceOneSidedAlpha": 0.005
+  },
+  "parameters": {
+    "integerIterations": 250000,
+    "jsonRecords": 128,
+    "jsonRounds": 8,
+    "shaBytes": 65536,
+    "shaRounds": 16,
+    "httpRequests": 8,
+    "batchRepetitions": 100,
+    "samples": 8,
+    "warmupRounds": 5,
+    "warmupCallsPerEndpoint": 500,
+    "gatePairs": 20
+  },
+  "orders": [
+    [
+      "integer",
+      "json",
+      "http",
+      "sha256"
+    ],
+    [
+      "json",
+      "sha256",
+      "integer",
+      "http"
+    ],
+    [
+      "sha256",
+      "http",
+      "json",
+      "integer"
+    ],
+    [
+      "http",
+      "integer",
+      "sha256",
+      "json"
+    ],
+    [
+      "integer",
+      "json",
+      "http",
+      "sha256"
+    ],
+    [
+      "json",
+      "sha256",
+      "integer",
+      "http"
+    ],
+    [
+      "sha256",
+      "http",
+      "json",
+      "integer"
+    ],
+    [
+      "http",
+      "integer",
+      "sha256",
+      "json"
+    ]
+  ],
+  "warmupOrders": [
+    [
+      "integer",
+      "json",
+      "http",
+      "sha256"
+    ],
+    [
+      "json",
+      "sha256",
+      "integer",
+      "http"
+    ],
+    [
+      "sha256",
+      "http",
+      "json",
+      "integer"
+    ],
+    [
+      "http",
+      "integer",
+      "sha256",
+      "json"
+    ],
+    [
+      "integer",
+      "json",
+      "http",
+      "sha256"
+    ]
+  ],
+  "hostCondition": {
+    "schema": 1,
+    "executable": "/Users/admin/Documents/deepseek-harness/default-workspace/native-build/lima/bin/limactl",
+    "sha256": "6d32fb0f880c0ea750434f2ac855a3f2129126752a301ce4d88adbd2fa599e1e",
+    "bytes": 32685200,
+    "environment": {
+      "LIMA_HOME": "/Users/admin/.defuss-vm-lima"
+    },
+    "arguments": [
+      "list",
+      "builder",
+      "--json"
+    ],
+    "expected": {
+      "name": "builder",
+      "status": "Stopped",
+      "memory": 12884901888
+    },
+    "rule": "Check before and after every fresh run; do not start compiler/build/other owned heavy work during the campaign."
+  },
+  "planningRule": {
+    "method": "Conservative approximate Gaussian planning from four independent pilot paired log-ratios; not a power guarantee for the bootstrap decision",
+    "pilotPairs": 4,
+    "power": 0.8,
+    "sdUpperConfidence": 0.9,
+    "sdChiSquareLowerQuantile": 0.5843743741551835,
+    "sdDegreesOfFreedom": 3,
+    "primaryTargetRatio": 0.9,
+    "otherTargetRatio": 1,
+    "minimumPairs": 8,
+    "maximumPairs": 32,
+    "roundTo": "next even number",
+    "formula": "s_design=s_pilot*sqrt(3/chi2(0.10,3)); N_endpoint=ceil(((z_bound+z_0.80)*s_design/log(limit/target))^2); N=max(8, all endpoints), rounded even. Never clamp to the maximum."
+  },
+  "driftRatioLimit": 1.1,
+  "unit": "Independent fresh capture pair; full horizon plus totals of all52 nested100-call batches, including nominal warmup",
+  "primary": "fullHorizon",
+  "secondary": [
+    "phaseSum",
+    "integer",
+    "json",
+    "sha256",
+    "http"
+  ],
+  "ratio": "candidate/control elapsed; below1 is faster",
+  "primaryUpperRatio": 0.95,
+  "secondaryUpperRatio": 1.1,
+  "readyUpperRatio": 1.1,
+  "memoryUpperRatio": 1.1,
+  "service": [
+    "emptyGateP95",
+    "resultStopMaxMs"
+  ],
+  "serviceUpperRatio": 1.5,
+  "runtimeArtifactByteRatio": 1,
+  "generatedCodeByteRatio": 1.1,
+  "resourceLimit": "Runtime artifact bytes must match exactly. Generated/resident code bytes and host peak memory are not exposed by this timing runtime; the generated-code budget remains unverified and product promotion is forbidden until separately measured.",
+  "confidence": 0.99,
+  "bootstrapDraws": 50000,
+  "bootstrapSeed": 20261107,
+  "secondaryFamily": "Bonferroni one-sided99.8% bounds for five secondary guards (family99%)",
+  "selectionRule": "Four fresh pairs select only if fullHorizon point ratio<0.95, all five secondary and readiness point ratios<1.10, both service point ratios<1.50 and each observed-memory ratio<=1.10. Drift is descriptive only. Separate correctness/exposure/resource evidence remains required.",
+  "confirmationRule": "Primary two-sided99% upper<0.95; five secondary one-sided99.8% uppers<1.10; ready one-sided99%<1.10; both service one-sided99.5% uppers<1.50; every observed-memory ratio<=1.10. Product promotion remains forbidden by unmeasured gates.",
+  "sampling": "Four independent fresh pilot pairs AB/BA/AB/BA. Pilot-derived next-even confirmation count, minimum8 and fixed cap32; wholly fresh confirmation only. No post-start or unknown-start observation can be replaced.",
+  "timing": "H includes startup and all20 prelude+32 subsequent phases, calibration/ACK/stopped-read gaps. No subtraction. Service stop-tail maximum covers all52 phases. Original guest source and bundle unchanged.",
+  "limits": [
+    "No diagnostics, code inspection or helper instrumentation. Same runtime artifact; one-time FIFO selection bound to package compatibility identity.",
+    "No native-parity claim; no full product promotion or JIT convergence claim from this campaign alone. No MSG2 observations are reused or relabeled."
+  ]
+}

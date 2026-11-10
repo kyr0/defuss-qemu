@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "scope": "Diagnostic-only adaptation. Original frozen files unchanged; observers copied byte for byte. Protocol/host/scratch imports continue to use the frozen sustained-v2 files.",
+  "sources": {
+    "benchmarks/harness/m2-resource/observer.js": "73786dd46ea7585d41c9965d4ae1ff9b929bff93ce7ef580fe1150ef3945b9de",
+    "benchmarks/harness/m2-resource/observer.mjs": "6e899c0893a9cc332451cfc9d6607f4ad7b9123c7d923d3cb6621611a5d2ce10",
+    "benchmarks/harness/m2-resource/derive.mjs": "e9eddfbd3eae5aa20753469d9811cf9516c15c2379b3817f6245bd88bbce7d6e",
+    "benchmarks/harness/m2-resource/package.mjs": "3487d485f64b1bc12378a22d6fdef140bc64373c9cd24b843cc8e48916eeae04",
+    "benchmarks/harness/m2-resource/analyze.mjs": "f840177a708af32fd3ac10643d36c1f0ed2c30f59bf43fba16025f99da977d96",
+    "benchmarks/harness/m2-resource/observer.test.mjs": "bc4dead173d65ae4bc00aeb216c9e4a0586926d07da6bc586034b42630e54f48",
+    "benchmarks/harness/m2-sustained-v2/browser.mjs": "47f789fb4f4d4b67d9ec4e1df889c70c958d82f9afbacdcd7e6fec0c277948e8",
+    "benchmarks/harness/m2-sustained-v2/run.mjs": "02df452a194fe39e1824c5429c495aee33f05d1bbaa792a53db816c2753c7623",
+    "benchmarks/harness/m2-sustained-v2/vm-adapter.mjs": "e8558f50b3dade500c204a9ad557130c6770e7b12d46b27a99edc7e0d832d185",
+    "benchmarks/harness/m2-sustained-v2/report.mjs": "54cb18394e43c68be656d0505057e8f98cbc3dab028dcebaeb3dbf86d0e0ddd7",
+    "benchmarks/harness/m2-sustained-v2/protocol.mjs": "32029cf6a37fd13aa894b89aff9b0eb82aef03b67390b4a17e81d38c18116d96",
+    "benchmarks/harness/m2-sustained-v2/host-condition.mjs": "29aaa0118a459c1e7bd76cdee0e6ed8c83b053dfc9e8c7bda827226ec2dd3c2f",
+    "benchmarks/harness/m2-sustained-v2/scratch.mjs": "e370b21dbe5c060b4ed579715a8fd159459cf6414a2106afb79b8782e6490531",
+    "benchmarks/harness/m2-sustained-v2/campaign.mjs": "45fca0c967b94488a915f1b2a574e99614e39bb4480a92a5d6d9350beff3bdc8",
+    "benchmarks/harness/m2-sustained-v2/plan.mjs": "dc644dc4285857e128dee1a0a6b0a5a79baeda5babf7a7f7f99360d4b0fa5786",
+    "benchmarks/harness/m2-sustained-v2/planning.mjs": "0b8e2857fa4ed065c1838960ce585153e984704ba8a8939bce6c7bd011650bd3"
+  }
+}

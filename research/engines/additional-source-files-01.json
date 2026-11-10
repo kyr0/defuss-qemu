@@ -1,0 +1,26 @@
+{
+  "bun/src/jsc/bindings/node/crypto/JSHash.cpp": {
+    "sha256": "d1d19af7c0b09017eff072000f8e13396dcf97c5fd8663bf29a357935307e591",
+    "bytes": 16514
+  },
+  "bun/src/jsc/bindings/ncrypto.cpp": {
+    "sha256": "5c5831dbae3714f6ea39c6ee2a5da57a2e2db1a887eab2e2e50ae29860397a6e",
+    "bytes": 104645
+  },
+  "webkit-bun/Source/JavaScriptCore/runtime/LiteralParser.cpp": {
+    "sha256": "2ae94413247bf9c424f73103d406c9841628b21d8833f361de07eec8d96a5bc5",
+    "bytes": 98984
+  },
+  "v8-chrome/src/wasm/baseline/arm64/liftoff-assembler-arm64-inl.h": {
+    "sha256": "5d2a34dcf60806d716f8a78315321d9423fc85013a0a549021e9388aab4f633e",
+    "bytes": 172277
+  },
+  "v8-chrome/src/compiler/backend/arm64/instruction-selector-arm64.cc": {
+    "sha256": "10f3ae359eb29fdd0dc92c7cf5031e14e924a2f0af5ca6d6f8be770f827f05b6",
+    "bytes": 297555
+  },
+  "v8-chrome/src/codegen/arm64/macro-assembler-arm64.cc": {
+    "sha256": "78f60f8f251d3a2acb9d54ff725be008e86400422c1d94992a8fccae6275fcf1",
+    "bytes": 174737
+  }
+}

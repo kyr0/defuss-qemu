@@ -1,0 +1,50 @@
+{
+  "createdUtc": "2026-11-08T08:34:07.583449+00:00",
+  "queries": [
+    {
+      "argv": [
+        "git",
+        "ls-remote",
+        "https://chromium.googlesource.com/v8/v8.git",
+        "refs/tags/15.7.112.23",
+        "refs/tags/14.6.202.34"
+      ],
+      "returncode": 0,
+      "stdout": "f9116f3bf9a50b0f7925daacfdc6fed503a9dbe2\trefs/tags/14.6.202.34\n440c1c463e2e528c309af5067952e7b11631507f\trefs/tags/15.7.112.23\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "ls-remote",
+        "https://github.com/oven-sh/bun.git",
+        "refs/tags/bun-v1.4.4"
+      ],
+      "returncode": 0,
+      "stdout": "38afee6c84fcf48c0edb2466aa4b27d287a59c30\trefs/tags/bun-v1.4.4\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "ls-remote",
+        "https://github.com/oven-sh/WebKit.git",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "32dc1b0f51d51d8e0f8cba3398db9cadfd09dc73\tHEAD\n96e77eccfde8dc9c207520d8ced856d8bdb8d386\trefs/heads/HEAD\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "ls-remote",
+        "https://github.com/WebKit/WebKit.git",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "ec27c970e5413d2c1e4ad8b1b0f7b3320caa1d97\tHEAD\nc1c32c572b9d909aa927f785f09deced3ae853e7\trefs/remotes/stash/HEAD\n",
+      "stderr": ""
+    }
+  ]
+}

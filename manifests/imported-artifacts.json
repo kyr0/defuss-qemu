@@ -1,0 +1,222 @@
+{
+  "runtime/x86_64/qemu-system-x86_64.js": {
+    "origin": "native-build/bun-inline/rnds2/runtime/qemu-system-x86_64.js",
+    "sha256": "2593a7d8d08971578bc68cab6d032408093d3d4bde0353bc085fcaf96c1adb9c",
+    "bytes": 189088
+  },
+  "runtime/x86_64/qemu-system-x86_64.wasm": {
+    "origin": "native-build/bun-inline/rnds2/runtime/qemu-system-x86_64.wasm",
+    "sha256": "ecfbc2b4efa6cffaf2b1a22e2d511f6a1e429c6f70c98aafe665176712c8bad4",
+    "bytes": 13232981
+  },
+  "manifests/history/x86_64-build-report.json": {
+    "origin": "native-build/bun-inline/rnds2/build-report.json",
+    "sha256": "029c85dd1e001c13e040e10cb7d68547bce9923a859a69cceb6283ecc6cd36db",
+    "bytes": 44804
+  },
+  "runtime/aarch64/qemu-system-aarch64.js": {
+    "origin": "native-build/arm64-stack-18/runtime/qemu-system-aarch64.js",
+    "sha256": "12c6d668639b884f0806cc9df2000a1e9a9ca401ce4f0560f712dc4d8d45c093",
+    "bytes": 189184
+  },
+  "runtime/aarch64/qemu-system-aarch64.wasm": {
+    "origin": "native-build/arm64-stack-18/runtime/qemu-system-aarch64.wasm",
+    "sha256": "b6fd37ff481cdd0ab7997117c75e5567c2f9bf77f214ead60e11f0e5a1149fe6",
+    "bytes": 22391809
+  },
+  "manifests/history/aarch64-build-report.json": {
+    "origin": "native-build/arm64-stack-18/build-report.json",
+    "sha256": "cf85d658368eb5aecedff97f3bd22fbe8dabb492a5439fffec71fac23a61dde9",
+    "bytes": 53737
+  },
+  "assets/bun/amd64/distroless.tar": {
+    "origin": "native-build/bun-arch-bench/assets/amd64/distroless.tar",
+    "sha256": "6e0c7ba5c87f423422ef4d5cc04f9d089ef9270c602567a8bb06b05902f635f4",
+    "bytes": 123943424
+  },
+  "assets/bun/amd64/vmlinuz-virt": {
+    "origin": "native-build/bun-arch-bench/assets/amd64/vmlinuz-virt",
+    "sha256": "8ce908a8cb28d55adcacacf8a16609fa400e07a8826f0084ae5b13b8cb91b9ab",
+    "bytes": 11838464
+  },
+  "assets/bun/amd64/initramfs-virt": {
+    "origin": "native-build/bun-arch-bench/assets/amd64/initramfs-virt",
+    "sha256": "6dde230b0e49d80c54337e2854d7cff6e8c9aa8cfa37588eaf9df4dd325a87a9",
+    "bytes": 9145776
+  },
+  "assets/bun/amd64/image-inspect.json": {
+    "origin": "native-build/bun-arch-bench/assets/amd64/image-inspect.json",
+    "sha256": "2ab0df2e2b0c195d447a53f21be26bc3b12850ac50c706c08cd2a57fbbe4feb4",
+    "bytes": 3199
+  },
+  "assets/arm64-smoke/Image": {
+    "origin": "native-build/arm64-test-assets/Image",
+    "sha256": "ee66670649107e2efe319a436c9b9caf84b093d471f73577d54292e5c081b80b",
+    "bytes": 34734080
+  },
+  "assets/arm64-smoke/initramfs-smoke.cpio.gz": {
+    "origin": "native-build/arm64-test-assets/initramfs-smoke.cpio.gz",
+    "sha256": "622895908de85a194e8483098aba5b6574ea2ae876a5ce75f145720cc2cdf414",
+    "bytes": 9087915
+  },
+  "assets/arm64-smoke/linux-provenance.json": {
+    "origin": "native-build/arm64-test-assets/linux-provenance.json",
+    "sha256": "839da352be9716ddd8832595239cd1374ba8e68a0f4b3519df3da52058b588fc",
+    "bytes": 1174
+  },
+  "packaging/bundle-bun.py": {
+    "origin": "native-build/bundle-bun.py",
+    "sha256": "de2ba52f70fbba8d2853e83775e5b7d50ac72e98f368715ef13380cf24e96ac9",
+    "bytes": 5980
+  },
+  "packaging/bun_app_package.py": {
+    "origin": "native-build/bun_app_package.py",
+    "sha256": "e280c6e6c5cf04048536fa70ee6f035b21086e9f4623a10c8443552751d19a07",
+    "bytes": 6713
+  },
+  "packaging/bun-app/boot.mjs": {
+    "origin": "native-build/bun-app/boot.mjs",
+    "sha256": "1460945a6da621a0d5d4a202bc77064f1efd972919f941c1e398e4c91e3e9337",
+    "bytes": 149
+  },
+  "packaging/bun-app/file-store.mjs": {
+    "origin": "native-build/bun-app/file-store.mjs",
+    "sha256": "710103a973bfbab1018c5765d50fd88fbd9c54ad97c66fd63cf1e621d5751a0a",
+    "bytes": 2098
+  },
+  "packaging/bun-app/globals.d.ts": {
+    "origin": "native-build/bun-app/globals.d.ts",
+    "sha256": "5787a3130befe59da119e22d6095da2bef25cd97256c7fc5cf9589e227fd6fb3",
+    "bytes": 156
+  },
+  "packaging/bun-app/init": {
+    "origin": "native-build/bun-app/init",
+    "sha256": "26d47c2bd052e874792276808b2d0682d01d6bd0484208524c0020d52fb63739",
+    "bytes": 1291
+  },
+  "packaging/bun-app/run.mjs": {
+    "origin": "native-build/bun-app/run.mjs",
+    "sha256": "4b844a65a7de6bd187cedc014f3e8a2000dbf6ced42ebeb610161ba07febceaf",
+    "bytes": 3335
+  },
+  "packaging/bun-app/serial.mjs": {
+    "origin": "native-build/bun-app/serial.mjs",
+    "sha256": "9ba820d4ab2ce659b23b37551260a4973baeb258ddd37f5f067a8a96370e6f26",
+    "bytes": 1149
+  },
+  "packaging/bun-app/snapshot-ready.mjs": {
+    "origin": "native-build/bun-app/snapshot-ready.mjs",
+    "sha256": "53d6da7fce18aa146e5e98f8ed3e02186f75dc708f4321c590e9030c5b3a90a2",
+    "bytes": 895
+  },
+  "packaging/bun-app/snapshots.mjs": {
+    "origin": "native-build/bun-app/snapshots.mjs",
+    "sha256": "6689e45235b61c6d31282811f6695dc5721d924cadd8a31f136c1fce14290a20",
+    "bytes": 4783
+  },
+  "packaging/bun-app/test.mjs": {
+    "origin": "native-build/bun-app/test.mjs",
+    "sha256": "3d3919280045f1d587c51e363ab72c1aa8a1b9851a0a3e660b7730e7d9c504ab",
+    "bytes": 4908
+  },
+  "packaging/bun-app/test-auto.mjs": {
+    "origin": "native-build/bun-app/test-auto.mjs",
+    "sha256": "798d1177bed7d660ad1f9d1e84623fac6037bac0bd504d096bb42638614b1b26",
+    "bytes": 2703
+  },
+  "packaging/bun-app/test-e2e.mjs": {
+    "origin": "native-build/bun-app/test-e2e.mjs",
+    "sha256": "fd4ac293040374f193d9d9a3ac0667014641b404e3e6781f636fcd0374b0a479",
+    "bytes": 10424
+  },
+  "packaging/bun-app/vm.mjs": {
+    "origin": "native-build/bun-app/vm.mjs",
+    "sha256": "0027aba973a57f77219820501a3858b38eafa5c1715383d296cd453262347f5b",
+    "bytes": 8579
+  },
+  "packaging/bun-app/example/automatic.ts": {
+    "origin": "native-build/bun-app/example/automatic.ts",
+    "sha256": "c723221e4c57b57f80977742b029546bf60ca3293eda0164def7de434b5c66e3",
+    "bytes": 951
+  },
+  "packaging/bun-app/example/main.ts": {
+    "origin": "native-build/bun-app/example/main.ts",
+    "sha256": "cf664c51677fb067f67ac71ef7523ce5b57627623afa7e40a2d05b5c954283cf",
+    "bytes": 1668
+  },
+  "benchmarks/workload/operations.ts": {
+    "origin": "native-build/bun-arch-bench/workload/operations.ts",
+    "sha256": "12df6a72cf79cd0e2b9cfd826cf45c9d9322917524cd91d9844b84914c46b498",
+    "bytes": 1612
+  },
+  "benchmarks/workload/main.ts": {
+    "origin": "native-build/bun-arch-bench/workload/main.ts",
+    "sha256": "a535fa151f95888c504d9327b2a93eede7e5927b9034cb929149507caad9a0c3",
+    "bytes": 1450
+  },
+  "benchmarks/workload/package.json": {
+    "origin": "native-build/bun-arch-bench/workload/package.json",
+    "sha256": "549fff36044a4d51c3e699802b577c383aa206236b63db2d2542e4c5ab1f8e7b",
+    "bytes": 210
+  },
+  "benchmarks/expected.json": {
+    "origin": "native-build/bun-arch-bench/expected.json",
+    "sha256": "e0f1f4a96c2f5d3066695d9e26ab9980f97527a94b987ffc98947a61c2f84288",
+    "bytes": 125
+  },
+  "benchmarks/workload.bundle.mjs": {
+    "origin": "native-build/bun-arch-bench/workload.bundle.mjs",
+    "sha256": "9de0d9e4729f69c527fe90dbd83c7c58f7876be5c1382be492ccf892e42f1b24",
+    "bytes": 3194
+  },
+  "benchmarks/bundle-provenance.json": {
+    "origin": "native-build/bun-arch-bench/bundle-provenance.json",
+    "sha256": "571ecbc14871aac0e53f744d0205aa0bed417c390ad78ae4867d0bccd5dd23c6",
+    "bytes": 1003
+  },
+  "tests/bun/guest.mjs": {
+    "origin": "native-build/bun-inline/guest.mjs",
+    "sha256": "34aec247e2cdc0c29ed141748d62ed4046cf102de46e079a7e3b38f44854df11",
+    "bytes": 7655
+  },
+  "tests/bun/fixture-config.mjs": {
+    "origin": "native-build/bun-inline/fixture-config.mjs",
+    "sha256": "d6729de07b7d850a5d0a63f7b9d9db7c0e24a2102673546955b1692115f305be",
+    "bytes": 2292
+  },
+  "tests/arm64-linux.mjs": {
+    "origin": "native-build/test-arm64-linux.mjs",
+    "sha256": "591ae4f5fcacfb1e380cdfa6b308a07a85f9e52e0d6ec5815d48151763607422",
+    "bytes": 6807
+  },
+  "docs/evidence/rnds2-results.md": {
+    "origin": "native-build/bun-inline/RESULTS.md",
+    "sha256": "0d37d78f2d50afd59ced55407aacfddfc70a2514b9773989cf95277ed7ea0e01",
+    "bytes": 8313
+  },
+  "docs/evidence/rnds2-contract.md": {
+    "origin": "native-build/bun-inline/rnds2-notes.md",
+    "sha256": "72fef27b37a57a3c28556b0395090745c70e29dc5afbd03b89198d579c57f454",
+    "bytes": 7236
+  },
+  "docs/evidence/smolvm-comparison.md": {
+    "origin": "native-build/bun-smol-compare/results/confirm01/REPORT.md",
+    "sha256": "5db9328ebb363e414b9563e01cabdcd5bbcc7d9113edea17a0dd690bd61cf456",
+    "bytes": 5717
+  },
+  "docs/evidence/arm64-history.md": {
+    "origin": "native-build/ARM64.md",
+    "sha256": "b661d82f9b85e21a55db6fbb67fb16baea15f8a5a17f418474f7e70041a07579",
+    "bytes": 8664
+  },
+  "assets/bun/amd64/initramfs-benchmark.cpio.gz": {
+    "origin": "native-build/bun-arch-bench/assets/amd64/initramfs-bun.cpio.gz",
+    "sha256": "50754ca5dfba62a6a105208481d9d356b7c36f6fccdd05238283f49f682df87c",
+    "bytes": 66899803
+  },
+  "tests/fixtures/app-manifest.json": {
+    "origin": "native-build/bun-app/example/dist/app.mjs.app/app.json",
+    "sha256": "04e4fa01cc20a9f53534767e9da3727bd31127cb9612086e3debec13afc8ec54",
+    "bytes": 1932
+  }
+}

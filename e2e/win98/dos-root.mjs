@@ -1,0 +1,10 @@
+import {attach, artifacts} from '../config.mjs';
+const {browser,page} = await attach();
+await page.locator('#screen').focus();
+await page.keyboard.type('cd \\', { delay: 100 });
+await page.keyboard.press('Enter');
+await page.keyboard.type('dir', { delay: 100 });
+await page.keyboard.press('Enter');
+await page.waitForTimeout(2000);
+await page.locator('#screen').screenshot({ path: artifacts + '/root-dir.png' });
+process.exit(0);

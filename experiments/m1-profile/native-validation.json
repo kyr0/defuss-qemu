@@ -1,0 +1,16 @@
+{
+  "status": "pass",
+  "kind": "host-native-correctness-only",
+  "core": "PASS: bounds, reset, privilege, PCREL aliases/64-bit/segmentation/wrap/stale/AOT, collision bounds, sampling, edges, saturation, syscalls",
+  "reader": "PASS: C/JS ABI roundtrip, exact large counts, pointer/layout guards, reset arguments",
+  "sourceAnchors": "pass",
+  "baselineUnchanged": true,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "compiler": "clang",
+  "sysroot": "/Library/Developer/CommandLineTools/SDKs/MacOSX15.4.sdk",
+  "qemuBuild": "not exercised by this test",
+  "vm": "not exercised by this test"
+}

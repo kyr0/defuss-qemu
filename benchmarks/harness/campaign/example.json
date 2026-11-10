@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "id": "m1-corrected-pc-example",
+  "inputs": [
+    "benchmarks/plans/m1-exploration-v2.json",
+    "artifacts/m1-source-02/source-m1-overlay.json",
+    "artifacts/m1-profile-build-02/build-report.json"
+  ],
+  "steps": [
+    {"id":"baseline","mode":"baseline","package":"artifacts/m1-baseline-01/app.mjs.app","snapshot":"capture","samplePeriod":257,"timeoutMs":600000},
+    {"id":"off","mode":"profile-off","package":"artifacts/m1-profile-02/app.mjs.app","snapshot":"capture","samplePeriod":257,"timeoutMs":600000},
+    {"id":"on","mode":"profile-on","package":"artifacts/m1-profile-02/app.mjs.app","snapshot":"capture","samplePeriod":257,"timeoutMs":600000},
+    {"id":"on-restore-263","mode":"profile-on","package":"artifacts/m1-profile-02/app.mjs.app","snapshot":"restore","captureStep":"on","samplePeriod":263,"timeoutMs":600000}
+  ]
+}

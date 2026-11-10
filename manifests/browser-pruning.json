@@ -1,0 +1,53 @@
+{
+  "roots": [
+    "win9x.mjs",
+    "qmp.mjs",
+    "machine.mjs",
+    "graphics.mjs",
+    "audio/backend.mjs"
+  ],
+  "kept": [
+    "audio/backend.mjs",
+    "audio/pcm.mjs",
+    "audio/ringbuf.mjs",
+    "display.mjs",
+    "fat16.mjs",
+    "graphics.mjs",
+    "helper-names.mjs",
+    "hotspots.mjs",
+    "machine.mjs",
+    "memory-diagnostics.mjs",
+    "native-counters.mjs",
+    "qmp.mjs",
+    "runtime-settings.mjs",
+    "share/block-file.mjs",
+    "storage.mjs",
+    "trace.mjs",
+    "win9x.mjs"
+  ],
+  "excluded": [
+    "audio/host.mjs",
+    "audio/worklet.mjs",
+    "display-cadence.mjs",
+    "fat-grow.mjs",
+    "frame-scheduler.mjs",
+    "fullscreen.mjs",
+    "grow-ui.mjs",
+    "grow-worker.mjs",
+    "input-queue.mjs",
+    "paged-disk.mjs",
+    "pointer.mjs",
+    "removable-ui.mjs",
+    "removable.mjs",
+    "share/bridge-io.mjs",
+    "share/cache.mjs",
+    "share/client.mjs",
+    "share/controls.mjs",
+    "share/fatfs.mjs",
+    "share/frame-buffers.mjs",
+    "share/native.mjs",
+    "share/projection.mjs",
+    "share/vm-worker.mjs",
+    "win9x-ui.mjs"
+  ]
+}

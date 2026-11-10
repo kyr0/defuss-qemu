@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "scope": "Retained local binary inputs. Preserve these exact files; mutable upstream URLs are not an identity.",
+  "files": {
+    "assets/bun/amd64/distroless.tar": {
+      "origin": "native-build/bun-arch-bench/assets/amd64/distroless.tar",
+      "sha256": "6e0c7ba5c87f423422ef4d5cc04f9d089ef9270c602567a8bb06b05902f635f4",
+      "bytes": 123943424
+    },
+    "assets/bun/amd64/vmlinuz-virt": {
+      "origin": "native-build/bun-arch-bench/assets/amd64/vmlinuz-virt",
+      "sha256": "8ce908a8cb28d55adcacacf8a16609fa400e07a8826f0084ae5b13b8cb91b9ab",
+      "bytes": 11838464
+    },
+    "assets/bun/amd64/initramfs-virt": {
+      "origin": "native-build/bun-arch-bench/assets/amd64/initramfs-virt",
+      "sha256": "6dde230b0e49d80c54337e2854d7cff6e8c9aa8cfa37588eaf9df4dd325a87a9",
+      "bytes": 9145776
+    },
+    "assets/bun/amd64/image-inspect.json": {
+      "origin": "native-build/bun-arch-bench/assets/amd64/image-inspect.json",
+      "sha256": "2ab0df2e2b0c195d447a53f21be26bc3b12850ac50c706c08cd2a57fbbe4feb4",
+      "bytes": 3199
+    },
+    "assets/arm64-smoke/Image": {
+      "origin": "native-build/arm64-test-assets/Image",
+      "sha256": "ee66670649107e2efe319a436c9b9caf84b093d471f73577d54292e5c081b80b",
+      "bytes": 34734080
+    },
+    "assets/arm64-smoke/initramfs-smoke.cpio.gz": {
+      "origin": "native-build/arm64-test-assets/initramfs-smoke.cpio.gz",
+      "sha256": "622895908de85a194e8483098aba5b6574ea2ae876a5ce75f145720cc2cdf414",
+      "bytes": 9087915
+    },
+    "assets/arm64-smoke/linux-provenance.json": {
+      "origin": "native-build/arm64-test-assets/linux-provenance.json",
+      "sha256": "839da352be9716ddd8832595239cd1374ba8e68a0f4b3519df3da52058b588fc",
+      "bytes": 1174
+    },
+    "assets/bun/amd64/initramfs-benchmark.cpio.gz": {
+      "origin": "native-build/bun-arch-bench/assets/amd64/initramfs-bun.cpio.gz",
+      "sha256": "50754ca5dfba62a6a105208481d9d356b7c36f6fccdd05238283f49f682df87c",
+      "bytes": 66899803
+    }
+  }
+}

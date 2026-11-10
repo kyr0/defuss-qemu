@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "os": "linux",
+  "architecture": "amd64",
+  "image": "oven/bun@sha256:b14d4eb5d84af31d532380ad42fbc8243936bbe23e2b85c5f740efbd845fe6f2",
+  "bunVersion": "1.4.4",
+  "appSha256": "0520284d97b11cafccb8f0042bad23c7c54c655b20c0b4ae6907db0a84728b9e",
+  "vm": {
+    "machine": "pc,acpi=off",
+    "cpu": "max",
+    "ramMiB": 512,
+    "smp": 1,
+    "tbMiB": 128,
+    "hotLimit": 1500,
+    "runtimeFlags": 3
+  },
+  "snapshot": {
+    "enabled": true,
+    "protocol": "com1-ready-v1",
+    "readyByte": 49,
+    "readyMode": "after-module",
+    "port": "/dev/ttyS0",
+    "console": "/dev/ttyS1"
+  },
+  "artifacts": {
+    "app.mjs": {
+      "sha256": "0520284d97b11cafccb8f0042bad23c7c54c655b20c0b4ae6907db0a84728b9e",
+      "bytes": 1474
+    },
+    "initramfs.cpio.gz": {
+      "sha256": "0b68082e5673014abe5e0685a7c30c2115056204b54dbbcaad8a16cb33e15c88",
+      "bytes": 66899608
+    },
+    "kernel": {
+      "sha256": "8ce908a8cb28d55adcacacf8a16609fa400e07a8826f0084ae5b13b8cb91b9ab",
+      "bytes": 11838464
+    },
+    "rom/bios-256k.bin": {
+      "sha256": "ae6f6aa973aaccc143f57aa960fb035fd9de4daee4ad0cd713322f8c259e7650",
+      "bytes": 262144
+    },
+    "rom/kvmvapic.bin": {
+      "sha256": "cdf057a71b07e3b52b19cbe210bdefa59250d01a9810b960f7fe1f98eed95a27",
+      "bytes": 9216
+    },
+    "rom/linuxboot_dma.bin": {
+      "sha256": "9c49e255340c78fc12e54ed043462bca02fb7fca29b7cfab62ff88a5344b6950",
+      "bytes": 1536
+    },
+    "runtime/qemu-system-x86_64.js": {
+      "sha256": "2cd7b48efbcfbab39de1e50f3c4b503518468c3da752aa3c12ce67d467378108",
+      "bytes": 189088
+    },
+    "runtime/qemu-system-x86_64.wasm": {
+      "sha256": "38f662efe40261acce2a1eb90582f19b3d58f62736b781b342acec6d5771ea3c",
+      "bytes": 13218109
+    }
+  },
+  "compatibilitySha256": "9ce7e524abaf04680219121acc2664bb66308941ae69babfbe90c9bc0fa7330c",
+  "generation": "9ce7e524abaf04680219121acc2664bb66308941ae69babfbe90c9bc0fa7330c"
+}

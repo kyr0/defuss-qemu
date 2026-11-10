@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {readFile,mkdir,open} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {resolve,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {verifySuspensionBinding} from './runtime-identity.mjs';
+import {validateImageBuild,validateSdkInvocation} from './build-provenance.mjs';
+import {validateImageClosure} from './identity.mjs';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'../..'),output=resolve(root,process.argv[2]);assert.equal(dirname(output),root+'/artifacts');await mkdir(output);
+const proof=await verifySuspensionBinding(root,'artifacts/m3b-worker-suspension-observed-binding-01/binding.json');proof.buffers.clear();
+const read=async(p,id)=>{const b=await readFile(resolve(root,p)),actual={sha256:createHash('sha256').update(b).digest('hex'),bytes:b.length};if(id)assert.deepEqual(actual,id);proof.inputs[p]=actual;return b;};
+const fixture='artifacts/m3b-worker-suspension-fixture-01',build=JSON.parse(await read(fixture+'/build-report.json'));validateImageBuild(build,{fixture});validateImageClosure(build);
+for(const [p,id]of Object.entries(build.artifacts))await read(fixture+'/'+p,id);
+for(const [p,hash]of Object.entries(build.sources))assert.equal(createHash('sha256').update(await read(p)).digest('hex'),hash);
+validateSdkInvocation(JSON.parse(await read(fixture+'/sdk-invocation-start.json')),JSON.parse(await read(build.sdkInvocation.path)),{root,fixture,path:build.sdkInvocation.path});
+const result={schema:1,status:'passed',timingEligible:false,binding:proof.binding.observedSuspensionBinding,inputs:proof.inputs,scope:'Runtime derivation, native source receipts and actual guest SDK build verified. No actual VM suspension evidence.'};
+const h=await open(output+'/report.json','wx');try{await h.writeFile(JSON.stringify(result,null,2)+'\n');await h.sync();}finally{await h.close();}const d=await open(output,'r');await d.sync();await d.close();console.log(JSON.stringify({status:'passed',identities:Object.keys(proof.inputs).length}));

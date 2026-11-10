@@ -1,0 +1,376 @@
+{
+  "schema": 1,
+  "kind": "diagnostic-resource-pair",
+  "experiment": "passive-fifo-v1",
+  "protocol": "defuss-passive-fifo-resource-v1",
+  "timingEligible": false,
+  "createdUtc": "2026-11-07T14:00:43.343Z",
+  "parameters": {
+    "integerIterations": 250000,
+    "jsonRecords": 128,
+    "jsonRounds": 8,
+    "shaBytes": 65536,
+    "shaRounds": 16,
+    "httpRequests": 8,
+    "batchRepetitions": 100,
+    "samples": 8,
+    "warmupRounds": 5,
+    "warmupCallsPerEndpoint": 500,
+    "gatePairs": 20
+  },
+  "orders": [
+    [
+      "integer",
+      "json",
+      "http",
+      "sha256"
+    ],
+    [
+      "json",
+      "sha256",
+      "integer",
+      "http"
+    ],
+    [
+      "sha256",
+      "http",
+      "json",
+      "integer"
+    ],
+    [
+      "http",
+      "integer",
+      "sha256",
+      "json"
+    ],
+    [
+      "integer",
+      "json",
+      "http",
+      "sha256"
+    ],
+    [
+      "json",
+      "sha256",
+      "integer",
+      "http"
+    ],
+    [
+      "sha256",
+      "http",
+      "json",
+      "integer"
+    ],
+    [
+      "http",
+      "integer",
+      "sha256",
+      "json"
+    ]
+  ],
+  "warmupOrders": [
+    [
+      "integer",
+      "json",
+      "http",
+      "sha256"
+    ],
+    [
+      "json",
+      "sha256",
+      "integer",
+      "http"
+    ],
+    [
+      "sha256",
+      "http",
+      "json",
+      "integer"
+    ],
+    [
+      "http",
+      "integer",
+      "sha256",
+      "json"
+    ],
+    [
+      "integer",
+      "json",
+      "http",
+      "sha256"
+    ]
+  ],
+  "packages": {
+    "control": {
+      "path": "artifacts/passive-fifo-package-off-01",
+      "manifest": {
+        "schema": 1,
+        "os": "linux",
+        "architecture": "amd64",
+        "image": "oven/bun@sha256:b14d4eb5d84af31d532380ad42fbc8243936bbe23e2b85c5f740efbd845fe6f2",
+        "bunVersion": "1.4.4",
+        "appSha256": "f9ed5327b4549350c4ddd554c6ada074487a45924435ded873abe46e0aa7d668",
+        "vm": {
+          "machine": "pc,acpi=off",
+          "cpu": "max",
+          "ramMiB": 512,
+          "smp": 1,
+          "tbMiB": 128,
+          "hotLimit": 1500,
+          "runtimeFlags": 3
+        },
+        "snapshot": {
+          "enabled": true,
+          "protocol": "com1-ready-v1",
+          "readyByte": 49,
+          "readyMode": "manual",
+          "port": "/dev/ttyS0",
+          "console": "/dev/ttyS1"
+        },
+        "artifacts": {
+          "app.mjs": {
+            "sha256": "f9ed5327b4549350c4ddd554c6ada074487a45924435ded873abe46e0aa7d668",
+            "bytes": 7509
+          },
+          "initramfs.cpio.gz": {
+            "sha256": "708d608fc040b5fed46ef78938a3808fd862cd5113c82799512d1c4d7dedc13d",
+            "bytes": 66901579
+          },
+          "kernel": {
+            "sha256": "8ce908a8cb28d55adcacacf8a16609fa400e07a8826f0084ae5b13b8cb91b9ab",
+            "bytes": 11838464
+          },
+          "rom/bios-256k.bin": {
+            "sha256": "ae6f6aa973aaccc143f57aa960fb035fd9de4daee4ad0cd713322f8c259e7650",
+            "bytes": 262144
+          },
+          "rom/kvmvapic.bin": {
+            "sha256": "cdf057a71b07e3b52b19cbe210bdefa59250d01a9810b960f7fe1f98eed95a27",
+            "bytes": 9216
+          },
+          "rom/linuxboot_dma.bin": {
+            "sha256": "9c49e255340c78fc12e54ed043462bca02fb7fca29b7cfab62ff88a5344b6950",
+            "bytes": 1536
+          },
+          "runtime/qemu-system-x86_64.js": {
+            "sha256": "428d465c62f6e700908a2ffefc4946eac32735c3a2babc78a00662a6e0493e38",
+            "bytes": 190074
+          },
+          "runtime/qemu-system-x86_64.wasm": {
+            "sha256": "5d7214930c5167519c64683ad84c3d419783b83dc75d325fa07c3134bf0bdfca",
+            "bytes": 13256561
+          }
+        },
+        "experiment": {
+          "name": "passive-fifo-v1",
+          "enabled": false
+        },
+        "benchmark": {
+          "protocol": "defuss-m2-sustained-v2",
+          "measurementProtocol": "defuss-passive-fifo-finite-v1"
+        },
+        "compatibilitySha256": "616fa36d22615179d027ffd246bead9d11e8feef2937f996815ee692a973fb50",
+        "generation": "616fa36d22615179d027ffd246bead9d11e8feef2937f996815ee692a973fb50"
+      },
+      "manifestSha256": "91e69e9c852b4f2a4f832e6f9044b2bf6a5abee5f60b6a57be2e66d77d285934"
+    },
+    "candidate": {
+      "path": "artifacts/passive-fifo-package-on-01",
+      "manifest": {
+        "schema": 1,
+        "os": "linux",
+        "architecture": "amd64",
+        "image": "oven/bun@sha256:b14d4eb5d84af31d532380ad42fbc8243936bbe23e2b85c5f740efbd845fe6f2",
+        "bunVersion": "1.4.4",
+        "appSha256": "f9ed5327b4549350c4ddd554c6ada074487a45924435ded873abe46e0aa7d668",
+        "vm": {
+          "machine": "pc,acpi=off",
+          "cpu": "max",
+          "ramMiB": 512,
+          "smp": 1,
+          "tbMiB": 128,
+          "hotLimit": 1500,
+          "runtimeFlags": 3
+        },
+        "snapshot": {
+          "enabled": true,
+          "protocol": "com1-ready-v1",
+          "readyByte": 49,
+          "readyMode": "manual",
+          "port": "/dev/ttyS0",
+          "console": "/dev/ttyS1"
+        },
+        "artifacts": {
+          "app.mjs": {
+            "sha256": "f9ed5327b4549350c4ddd554c6ada074487a45924435ded873abe46e0aa7d668",
+            "bytes": 7509
+          },
+          "initramfs.cpio.gz": {
+            "sha256": "708d608fc040b5fed46ef78938a3808fd862cd5113c82799512d1c4d7dedc13d",
+            "bytes": 66901579
+          },
+          "kernel": {
+            "sha256": "8ce908a8cb28d55adcacacf8a16609fa400e07a8826f0084ae5b13b8cb91b9ab",
+            "bytes": 11838464
+          },
+          "rom/bios-256k.bin": {
+            "sha256": "ae6f6aa973aaccc143f57aa960fb035fd9de4daee4ad0cd713322f8c259e7650",
+            "bytes": 262144
+          },
+          "rom/kvmvapic.bin": {
+            "sha256": "cdf057a71b07e3b52b19cbe210bdefa59250d01a9810b960f7fe1f98eed95a27",
+            "bytes": 9216
+          },
+          "rom/linuxboot_dma.bin": {
+            "sha256": "9c49e255340c78fc12e54ed043462bca02fb7fca29b7cfab62ff88a5344b6950",
+            "bytes": 1536
+          },
+          "runtime/qemu-system-x86_64.js": {
+            "sha256": "428d465c62f6e700908a2ffefc4946eac32735c3a2babc78a00662a6e0493e38",
+            "bytes": 190074
+          },
+          "runtime/qemu-system-x86_64.wasm": {
+            "sha256": "5d7214930c5167519c64683ad84c3d419783b83dc75d325fa07c3134bf0bdfca",
+            "bytes": 13256561
+          }
+        },
+        "experiment": {
+          "name": "passive-fifo-v1",
+          "enabled": true
+        },
+        "benchmark": {
+          "protocol": "defuss-m2-sustained-v2",
+          "measurementProtocol": "defuss-passive-fifo-finite-v1"
+        },
+        "compatibilitySha256": "3168b28f4aacccd8fffcaf55a9a78de61498b3ba2805ee11f3a962e7faf773fb",
+        "generation": "3168b28f4aacccd8fffcaf55a9a78de61498b3ba2805ee11f3a962e7faf773fb"
+      },
+      "manifestSha256": "c34c3e0cad5f4399113b7a0e005127de28869b1a82eb7391ce531305e7e43feb"
+    }
+  },
+  "inputs": [
+    "artifacts/passive-fifo-validation-source-01/manifest.json",
+    "artifacts/passive-fifo-validation-source-review-01/review.json",
+    "artifacts/passive-fifo-finite-v1-source-01/manifest.json",
+    "artifacts/passive-fifo-finite-v1-source-review-01/review.json",
+    "artifacts/passive-fifo-heldout-off-capture-01/report.json",
+    "artifacts/passive-fifo-heldout-off-restore-01/report.json",
+    "artifacts/passive-fifo-heldout-on-capture-01/report.json",
+    "artifacts/passive-fifo-heldout-on-restore-01/report.json",
+    "artifacts/passive-fifo-heldout-review-01/review.json",
+    "artifacts/passive-fifo-validation-review-source-01/manifest.json",
+    "artifacts/passive-fifo-validation-reviewer-source-review-01/review.json",
+    "artifacts/passive-fifo-overlay-source-01/manifest.json",
+    "artifacts/passive-fifo-overlay-source-review-01/review.json",
+    "artifacts/passive-fifo-performance-build-01/build-report.json",
+    "artifacts/passive-fifo-performance-source-01/source-fifo-overlay.json",
+    "artifacts/passive-fifo-performance-build-01/source-recheck.json",
+    "artifacts/passive-fifo-package-off-01/app.json",
+    "artifacts/passive-fifo-package-off-01/runtime-provenance.json",
+    "artifacts/passive-fifo-build-review-tools-01/recheck.py",
+    "experiments/passive-fifo/README.md",
+    "artifacts/passive-fifo-overlay-source-01/source/README.md",
+    "experiments/passive-fifo/diagnostic.inc",
+    "artifacts/passive-fifo-overlay-source-01/source/diagnostic.inc",
+    "experiments/passive-fifo/fifo-core.h",
+    "artifacts/passive-fifo-overlay-source-01/source/fifo-core.h",
+    "experiments/passive-fifo/head.inc",
+    "artifacts/passive-fifo-overlay-source-01/source/head.inc",
+    "experiments/passive-fifo/native-contract.c",
+    "artifacts/passive-fifo-overlay-source-01/source/native-contract.c",
+    "experiments/passive-fifo/prepare.py",
+    "artifacts/passive-fifo-overlay-source-01/source/prepare.py",
+    "experiments/passive-fifo/reader.mjs",
+    "artifacts/passive-fifo-overlay-source-01/source/reader.mjs",
+    "experiments/passive-fifo/reader.test.mjs",
+    "artifacts/passive-fifo-overlay-source-01/source/reader.test.mjs",
+    "experiments/passive-fifo/tail.inc",
+    "artifacts/passive-fifo-overlay-source-01/source/tail.inc",
+    "experiments/passive-fifo/test_contract.py",
+    "artifacts/passive-fifo-overlay-source-01/source/test_contract.py",
+    "artifacts/passive-fifo-performance-build-review-01/inventory.json",
+    "artifacts/passive-fifo-performance-build-01/runtime/audio/backend.mjs",
+    "artifacts/passive-fifo-performance-build-01/runtime/audio/pcm.mjs",
+    "artifacts/passive-fifo-performance-build-01/runtime/audio/ringbuf.mjs",
+    "artifacts/passive-fifo-performance-build-01/runtime/graphics.mjs",
+    "artifacts/passive-fifo-performance-build-01/runtime/native-counters.mjs",
+    "artifacts/passive-fifo-performance-build-01/runtime/x86_64/qemu-system-x86_64.js",
+    "artifacts/passive-fifo-performance-build-01/runtime/x86_64/qemu-system-x86_64.wasm",
+    "artifacts/passive-fifo-package-on-01/app.json",
+    "artifacts/passive-fifo-package-on-01/runtime-provenance.json"
+  ],
+  "inputIdentities": {
+    "artifacts/passive-fifo-validation-source-01/manifest.json": "49bfceac7b571ef856752e9bc177583f657407eafaf7fa0d232ee4aaab9145b7",
+    "artifacts/passive-fifo-validation-source-review-01/review.json": "e7c06526c05ca6279b6adaafaf27833f20394ffa3ca6e77d5b9a8c6b92f1684d",
+    "artifacts/passive-fifo-finite-v1-source-01/manifest.json": "c3e2871b5a374c1fd43beb5bb0cbb0282d08422ac86c7267d4969f23993e4dbe",
+    "artifacts/passive-fifo-finite-v1-source-review-01/review.json": "ebebddc71b440aa089106405fe86d1e888995689b27e1a7cf697c6a9bb0f2fff",
+    "artifacts/passive-fifo-heldout-off-capture-01/report.json": "fc91965dc77010e281bbd033c1143a7a338431df9dd0acd2e4ec481f6780f418",
+    "artifacts/passive-fifo-heldout-off-restore-01/report.json": "2b91c8dba915497fde7b03d11459364a002dd7532fc75c9c3ffd378fec74d2b5",
+    "artifacts/passive-fifo-heldout-on-capture-01/report.json": "9919b3fcd70da182d30708d344a2886811e64594609f9aacd898a957719f396d",
+    "artifacts/passive-fifo-heldout-on-restore-01/report.json": "ee3f2df3f262f4f6286d37ef1a83297536ffcbcc658a816ce1a82951fbd4f2c5",
+    "artifacts/passive-fifo-heldout-review-01/review.json": "578329b81682bb285beeaff538cda73445fe6c6a08f48c164765b9671cf7006d",
+    "artifacts/passive-fifo-validation-review-source-01/manifest.json": "8ea041c0d2dfb29ddbcfa2cba9a5a93cdbbec9d2ad460bb93136dbeb7c7fc842",
+    "artifacts/passive-fifo-validation-reviewer-source-review-01/review.json": "d0f09ae2c476a5639fc80cd3a64786681158fb3cef749835eccbd91020c82086",
+    "artifacts/passive-fifo-overlay-source-01/manifest.json": "0b0007d3c3ccc9732a0a66c308b3f6db31ff27f15d4efc189579051f503fed27",
+    "artifacts/passive-fifo-overlay-source-review-01/review.json": "2083b74b69137a0bbc235449a26a8c640110c8337fa71e3d75227649cd26c6e8",
+    "artifacts/passive-fifo-performance-build-01/build-report.json": "1dff3b30873d9c006cf58af532530186bc66b10c81c4fe611dd839efd5a8321a",
+    "artifacts/passive-fifo-performance-source-01/source-fifo-overlay.json": "f6bd6e53d2e0685d55265934d8a2f9071a646b75797c45c7a168db3bc8e76043",
+    "artifacts/passive-fifo-performance-build-01/source-recheck.json": "d256b978fd1460a506921e4a5174c0966bc01fc260eccd8405b3701d18c7e442",
+    "artifacts/passive-fifo-package-off-01/app.json": "91e69e9c852b4f2a4f832e6f9044b2bf6a5abee5f60b6a57be2e66d77d285934",
+    "artifacts/passive-fifo-package-off-01/runtime-provenance.json": "b0a704b89d5659dc667acef047edb38971fb104565f3e4920c4d7fdb1b0e57a0",
+    "artifacts/passive-fifo-build-review-tools-01/recheck.py": "a0131cadba9a82c47e1b5a7b1fdb72d151e740eee709b70326cffa89904b3b98",
+    "experiments/passive-fifo/README.md": "120c6a0aeef8752cb8edd43b8a5f3519d07fc6a92788c8b89d1a95586f30bffa",
+    "artifacts/passive-fifo-overlay-source-01/source/README.md": "120c6a0aeef8752cb8edd43b8a5f3519d07fc6a92788c8b89d1a95586f30bffa",
+    "experiments/passive-fifo/diagnostic.inc": "4e1faf7191815673eb31b8468c7b2a98741f8ce4e4461daaf6c8bc9d6cf6310e",
+    "artifacts/passive-fifo-overlay-source-01/source/diagnostic.inc": "4e1faf7191815673eb31b8468c7b2a98741f8ce4e4461daaf6c8bc9d6cf6310e",
+    "experiments/passive-fifo/fifo-core.h": "d4691504a985ee88e8343743d4be0957327d2172232c643b88e16b3979ae7cf4",
+    "artifacts/passive-fifo-overlay-source-01/source/fifo-core.h": "d4691504a985ee88e8343743d4be0957327d2172232c643b88e16b3979ae7cf4",
+    "experiments/passive-fifo/head.inc": "f88bc380820a9c8cbcf7f65d50efb6493406ff24849c513024c97b1252f5edab",
+    "artifacts/passive-fifo-overlay-source-01/source/head.inc": "f88bc380820a9c8cbcf7f65d50efb6493406ff24849c513024c97b1252f5edab",
+    "experiments/passive-fifo/native-contract.c": "2709c128c82720d39d9755a19bb1677fb3b851fd49c9e33f4d187537aa995968",
+    "artifacts/passive-fifo-overlay-source-01/source/native-contract.c": "2709c128c82720d39d9755a19bb1677fb3b851fd49c9e33f4d187537aa995968",
+    "experiments/passive-fifo/prepare.py": "61e422ae32939fcab46bf3e7b7a98df5a38e2b6016441daa55f39470a9f43eff",
+    "artifacts/passive-fifo-overlay-source-01/source/prepare.py": "61e422ae32939fcab46bf3e7b7a98df5a38e2b6016441daa55f39470a9f43eff",
+    "experiments/passive-fifo/reader.mjs": "32c56b43191db71b45c5e86bfbf12e0c032939712ff27e86dc4f5ad5c99041d0",
+    "artifacts/passive-fifo-overlay-source-01/source/reader.mjs": "32c56b43191db71b45c5e86bfbf12e0c032939712ff27e86dc4f5ad5c99041d0",
+    "experiments/passive-fifo/reader.test.mjs": "6a216632f9468225d321478fe755a11852a368a7635c72b235eed023f803c5b4",
+    "artifacts/passive-fifo-overlay-source-01/source/reader.test.mjs": "6a216632f9468225d321478fe755a11852a368a7635c72b235eed023f803c5b4",
+    "experiments/passive-fifo/tail.inc": "392198e5c1d3ed34509e1aa6a4fd46986cb7d44e90daf2d3308cca38b004aa23",
+    "artifacts/passive-fifo-overlay-source-01/source/tail.inc": "392198e5c1d3ed34509e1aa6a4fd46986cb7d44e90daf2d3308cca38b004aa23",
+    "experiments/passive-fifo/test_contract.py": "b6e1bc59b9b5e99e883e04ba7abf799f33057f32b519f0a327087d84954f7a33",
+    "artifacts/passive-fifo-overlay-source-01/source/test_contract.py": "b6e1bc59b9b5e99e883e04ba7abf799f33057f32b519f0a327087d84954f7a33",
+    "artifacts/passive-fifo-performance-build-review-01/inventory.json": "9b1e8247b609979343a0fac60926ab216c5de7bf8903aaedff3ab3fccfb4f28d",
+    "artifacts/passive-fifo-performance-build-01/runtime/audio/backend.mjs": "270a762776bd0de84660263679947212fd9f7b6e48ecfb6a1dbc944f15306b00",
+    "artifacts/passive-fifo-performance-build-01/runtime/audio/pcm.mjs": "fb6c5d49d48a587d1975e43ba6e933298360692a49b4a56679118991b95e26ad",
+    "artifacts/passive-fifo-performance-build-01/runtime/audio/ringbuf.mjs": "e2480440789f7eac2c39871817f9f75b2423c7f8211e0ee4139f478c7cff89a8",
+    "artifacts/passive-fifo-performance-build-01/runtime/graphics.mjs": "649ab95785e7537c79578d3dd8e507c6fb1f102f4a14207020390f754caf853f",
+    "artifacts/passive-fifo-performance-build-01/runtime/native-counters.mjs": "18918a3eca0a370e619a2e15a89c59f133bca8943dbeb72dff9578369dc5a25f",
+    "artifacts/passive-fifo-performance-build-01/runtime/x86_64/qemu-system-x86_64.js": "428d465c62f6e700908a2ffefc4946eac32735c3a2babc78a00662a6e0493e38",
+    "artifacts/passive-fifo-performance-build-01/runtime/x86_64/qemu-system-x86_64.wasm": "5d7214930c5167519c64683ad84c3d419783b83dc75d325fa07c3134bf0bdfca",
+    "artifacts/passive-fifo-package-on-01/app.json": "c34c3e0cad5f4399113b7a0e005127de28869b1a82eb7391ce531305e7e43feb",
+    "artifacts/passive-fifo-package-on-01/runtime-provenance.json": "b0a704b89d5659dc667acef047edb38971fb104565f3e4920c4d7fdb1b0e57a0"
+  },
+  "upperRatio": 1.1,
+  "timeoutMs": 600000,
+  "hostCondition": {
+    "schema": 1,
+    "executable": "/Users/admin/Documents/deepseek-harness/default-workspace/native-build/lima/bin/limactl",
+    "sha256": "6d32fb0f880c0ea750434f2ac855a3f2129126752a301ce4d88adbd2fa599e1e",
+    "bytes": 32685200,
+    "environment": {
+      "LIMA_HOME": "/Users/admin/.defuss-vm-lima"
+    },
+    "arguments": [
+      "list",
+      "builder",
+      "--json"
+    ],
+    "expected": {
+      "name": "builder",
+      "status": "Stopped",
+      "memory": 12884901888
+    },
+    "rule": "Check before and after every fresh run; do not start compiler/build/other owned heavy work during the campaign."
+  },
+  "scope": "Prospective single matched cumulative-module-input-byte pair, before timing. Same full52-phase workload and performance WASM; no timing selection or native/live-memory claim."
+}

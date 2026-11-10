@@ -1,0 +1,18 @@
+{
+  "v8-chrome/src/wasm/function-compiler.cc": {
+    "sha256": "26af9c274a01a1a191989ea8efc5213caa6088e14957a7cce1ea0164360b0863",
+    "bytes": 11071
+  },
+  "v8-chrome/src/wasm/wasm-engine.cc": {
+    "sha256": "552c583a95d31c6d48854b30a48c868822e8d90ddc1ca8dca85e2769587eabce",
+    "bytes": 90524
+  },
+  "v8-chrome/src/wasm/wasm-js.cc": {
+    "sha256": "45383ff96c107332460e74ca89963a8b8022eb91c406c601e5914e36c7fbef50",
+    "bytes": 147194
+  },
+  "node/deps/v8/src/wasm/function-compiler.cc": {
+    "sha256": "eddd2bada096e32e83d3d1c98200d789dcc18c2be002ac057d0be157dc55b92a",
+    "bytes": 11822
+  }
+}

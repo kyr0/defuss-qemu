@@ -1,0 +1,9 @@
+{
+  "name": "wasm-bun-architecture-benchmark",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "bun build ./main.ts --target bun --outfile ../workload.bundle.mjs"
+  }
+}

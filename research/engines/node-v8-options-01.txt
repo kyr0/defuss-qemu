@@ -1,0 +1,21 @@
+  --wasm-tier-up (enable tier up to the optimizing compiler (requires --liftoff to have an effect))
+        type: bool  default: --wasm-tier-up
+  --wasm-dynamic-tiering (enable dynamic tier up to the optimizing compiler)
+  --wasm-dynamic-tiering (enable dynamic tier up to the optimizing compiler)
+        type: bool  default: --wasm-dynamic-tiering
+  --wasm-sync-tier-up (run tier up jobs synchronously for testing)
+  --wasm-tiering-budget (budget for dynamic tiering (rough approximation of bytes executed)
+        type: int  default: --wasm-tiering-budget=13000000
+  --wasm-wrapper-tiering-budget (budget for wrapper tierup (number of calls until tier-up))
+  --liftoff-only (disallow TurboFan compilation for WebAssembly (for testing))
+        type: bool  default: --no-liftoff-only
+  --enable-testing-opcode-in-wasm (enables a testing opcode in wasm that is only implemented in TurboFan)
+  --wasm-inlining (enable inlining of Wasm functions into Wasm functions)
+        type: bool  default: --wasm-inlining
+  --wasm-inlining-budget (maximum graph size (in TF nodes) that allows inlining more)
+  --wasm-lazy-compilation (enable lazy compilation for all wasm modules)
+        type: bool  default: --wasm-lazy-compilation
+  --trace-wasm-lazy-compilation (trace lazy compilation of wasm functions)
+  --wasm-memory64-trap-handling (Use trap handling for Wasm memory64 bounds checks)
+        type: bool  default: --wasm-memory64-trap-handling
+  --wasm-jitless (execute all Wasm code in the Wasm interpreter)

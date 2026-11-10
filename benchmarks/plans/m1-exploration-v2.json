@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "id": "m1-exploration-v2",
+  "status": "design-before-revised-guest-observations",
+  "scope": "Diagnostic attribution and component references; not optimization confirmation or promotion",
+  "hypotheses": [
+    "Phase-level dispatch and address/context exposure will identify whether integer, JSON, SHA and loopback HTTP require different optimization targets.",
+    "Existing translation/interpreter/helper/memory counters plus bounded PC/edge and syscall exposure can narrow unexplained costs without treating nested counters as exclusive time fractions.",
+    "Direct WASM integer and SHA components will establish practical component references and expose guard/copy interface costs."
+  ],
+  "guest": {
+    "architecture": "x86_64",
+    "image": "pinned Linux Bun 1.4.4 distroless",
+    "vcpu": 1,
+    "ramMiB": 512,
+    "workloadSource": "benchmarks/workload/operations.ts",
+    "workloadPolicy": "Import unchanged source; use new explicitly identified M1 ACK protocol",
+    "warmupCycles": 10,
+    "samplesPerPhase": 3,
+    "callsPerSample": 100,
+    "emptyGatePairs": 20,
+    "phaseOrders": [
+      [
+        "integer",
+        "json",
+        "sha256",
+        "http"
+      ],
+      [
+        "http",
+        "sha256",
+        "json",
+        "integer"
+      ],
+      [
+        "json",
+        "sha256",
+        "http",
+        "integer"
+      ]
+    ]
+  },
+  "initialRunOrder": [
+    "retained-baseline",
+    "diagnostic-disabled",
+    "diagnostic-enabled"
+  ],
+  "independentUnit": "Fresh browser and guest capture per mode; repeated phase batches are nested, not independent launches",
+  "initialCountPerMode": 1,
+  "followupPolicy": "Retain every pilot and failure. Correctness or incomplete coverage requires a new labeled run. Additional repetitions are exploratory and must not be pooled into a frozen confirmation.",
+  "timing": {
+    "clock": "Host monotonic performance clock",
+    "endpoint": "Start ACK/continuation through receipt of the result marker, with the exact stop/read boundary documented by the runner",
+    "controlOverhead": "Report empty gates and stopped diagnostic-read intervals separately; do not subtract calibration from the primary endpoint",
+    "guestClock": "Diagnostic only",
+    "counterMeaning": "Dispatch/PC/edge/syscall exposure is not guest instruction retirement or a fraction of elapsed time; existing helper/interpreter/translation timers may nest"
+  },
+  "directReferences": {
+    "integer": "Exact dependent i32 recurrence, arbitrary seeds/counts/constants plus named original workload",
+    "sha": "Arbitrary-state compression and synchronous full SHA256; named 65536-byte pattern times 16",
+    "boundaries": [
+      "resident raw kernel",
+      "checked boundary",
+      "staged copy boundary"
+    ],
+    "host": "Use same installed Chrome for browser component and guest observations; Node correctness is separate",
+    "memory": "Standalone wasm32 component reference differs from VM memory64 ABI and is labeled explicitly",
+    "equivalenceLimits": "No standalone JSON parser or in-memory exchange is claimed equivalent to Bun object creation or guest HTTP"
+  },
+  "validation": [
+    "Exact original workload results and all gate ordering/identity checks",
+    "Pinned source, toolchain, runtime, bundle, guest assets and harness identities",
+    "Bounded/resettable profile data with documented drops, sampling and estimation error",
+    "Arbitrary-input integer and SHA oracle agreement, bounds, alias and cancellation contracts",
+    "Owned process cleanup and unchanged retained production runtimes"
+  ],
+  "analysis": {
+    "primaryOutput": "Per-phase exposure, descriptive perturbation ratios, direct versus bridge component costs, provenance and ranked next hypotheses",
+    "uncertainty": "One independent launch per mode cannot establish a confidence interval, equivalence, or a percent-level performance improvement",
+    "promotion": "None; production defaults remain unchanged"
+  },
+  "previous": "m1-exploration-v1",
+  "revisionReason": "Pilot01 passed workload and aggregate-counter checks, but all x86 entries used CF_PCREL and were omitted from PC/edge tables. Candidate02 reconstructs x86 entry PCs with the frontend PCREL contract and a page-offset sanity check. Pilot01 results remain separate.",
+  "attributionAcceptance": [
+    "pcAddressingRevision=1",
+    "Nonempty PC and edge samples in each measured phase",
+    "No saturation or unsupported-worker observations",
+    "Report unknown-PC fraction and any page-offset mismatch omission explicitly"
+  ],
+  "followupRestore": {
+    "mode": "profile-on",
+    "samplePeriod": 263,
+    "scope": "Fresh-browser snapshot integrity/continuation and exploratory deterministic-sampling sensitivity; not an independent performance confirmation"
+  }
+}

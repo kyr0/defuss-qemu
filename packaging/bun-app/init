@@ -1,0 +1,26 @@
+#!/bin/busybox sh
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+/bin/busybox --install -s /bin
+fail() { echo "BUN_APP_FAILURE:$*"; poweroff -f; while :; do sleep 1; done; }
+mount -t proc proc /proc || fail proc
+mount -t sysfs sysfs /sys || fail sys
+mount -t devtmpfs devtmpfs /dev || fail dev
+exec </dev/console >/dev/console 2>&1
+ip link set lo up || fail loopback
+stty -F /dev/ttyS0 115200 raw -echo || fail com1
+# Keep the UART open across the readiness helper and app opens. Linux otherwise
+# flushes received bytes on the last close, racing the host's first app command.
+exec 3<>/dev/ttyS0
+mkdir -p /distroless/proc /distroless/sys /distroless/dev /distroless/tmp
+mount --bind /proc /distroless/proc || fail bind-proc
+mount --bind /sys /distroless/sys || fail bind-sys
+mount --bind /dev /distroless/dev || fail bind-dev
+mount -t tmpfs tmpfs /distroless/tmp || fail tmp
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bun-node-fallback-bin
+export BUN_RUNTIME_TRANSPILER_CACHE_PATH=0 BUN_INSTALL_BIN=/usr/local/bin
+export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt BUN_WASM_SNAPSHOT=1
+echo "BUN_APP_COLD_BOOT:$(uname -m):$(uname -r)"
+chroot /distroless /usr/local/bin/bun /boot.mjs || fail bun
+echo BUN_APP_EXIT
+poweroff -f
+while :; do sleep 1; done

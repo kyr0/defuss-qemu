@@ -1,0 +1,26 @@
+{
+  "createdUtc": "2026-11-06T13:56:14.375789+00:00",
+  "builderImage": "oven/bun@sha256:f6e8216146f6cbe9fecaa7a8161876cafee774ef68013e975c7d63183004b934",
+  "builderVersion": "1.4.4",
+  "target": "bun",
+  "format": "esm",
+  "minify": false,
+  "entrypoint": "native-build/bun-arch-bench/workload/main.ts",
+  "entrypointSha256": "a535fa151f95888c504d9327b2a93eede7e5927b9034cb929149507caad9a0c3",
+  "projectRoot": "native-build/bun-arch-bench/workload",
+  "outfile": "native-build/bun-arch-bench/workload.bundle.mjs",
+  "bytes": 3194,
+  "sha256": "9de0d9e4729f69c527fe90dbd83c7c58f7876be5c1382be492ccf892e42f1b24",
+  "bunArguments": [
+    "build",
+    "./main.ts",
+    "--target",
+    "bun",
+    "--outfile",
+    "/out/workload.bundle.mjs"
+  ],
+  "seconds": 0.2748829170013778,
+  "stdout": "Bundled 2 modules in 8ms\n\n  workload.bundle.mjs  3.19 KB  (entry point)\n\n",
+  "stderr": "",
+  "scope": "One portable JS bundle for the amd64 and arm64 Bun runtimes; Node/Bun builtins remain runtime imports"
+}

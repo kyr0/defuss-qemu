@@ -1,0 +1,34 @@
+--- scripts/build.py
++++ experiments/memory32-rnds2/build.py
+@@ -8,9 +8,12 @@
+ import subprocess
+ import time
+ from pathlib import Path
++import sys
++ROOT = Path(__file__).resolve().parents[2]
++sys.path.insert(0, str(ROOT / "scripts"))
+ from runtime_dependencies import stage_dependencies
+ 
+-ROOT = Path(__file__).resolve().parents[1]
++
+ SDK = 'registry.gitlab.com/qemu-project/qemu/qemu/emsdk-wasm64-cross@sha256:c7e05b4d0052cbc9e069add4ca01d80bab034c5d07ea1415e0522fcac6497812'
+ TARGETS = {'x86_64-softmmu': 'x86_64', 'i386-softmmu': 'i386', 'aarch64-softmmu': 'aarch64'}
+ 
+@@ -43,7 +46,7 @@
+             '-sEXPORTED_RUNTIME_METHODS=addFunction,removeFunction,TTY,FS',
+             '-sSTACK_SIZE=1048576', '-sDEFAULT_PTHREAD_STACK_SIZE=1048576',
+             '-sSTACK_OVERFLOW_CHECK=2']
+-    configure = ['emconfigure', str(source / 'configure'), '--static', '--cpu=wasm64',
++    configure = ['emconfigure', str(source / 'configure'), '--static', '--cpu=wasm64', '--wasm64-32bit-address-limit',
+                  '--target-list=' + ','.join(targets), '--disable-werror', '--disable-docs',
+                  '--disable-tools', '--disable-rust', '--disable-guest-agent', '--disable-plugins',
+                  '--disable-download', '--without-default-features', '--enable-tcg',
+@@ -52,7 +55,7 @@
+                  '-Dc_args=-pthread -msimd128', '-Dc_link_args=' + ' '.join(link), '-Doptimization=2']
+     compile_command = ['ninja', '-j' + str(args.jobs),
+                        *['qemu-system-' + TARGETS[t] + '.js' for t in targets]]
+-    report = {'schema': 1, 'sdk': SDK, 'source': str(source), 'targets': targets,
++    report = {'schema': 1, 'memoryProfile': 'MEMORY64=2: i64 C pointers, lowered memory32', 'sdk': SDK, 'source': str(source), 'targets': targets,
+               'commands': [configure, compile_command], 'runs': [], 'status': 'planned',
+               'scope': 'Fresh source build; imported runtime performance claims do not transfer automatically'}
+     if args.dry_run:

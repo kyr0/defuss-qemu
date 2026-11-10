@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "kind": "deadline-only-orchestration-derivation",
+  "createdUtc": "2026-11-07T15:15:30.839216+00:00",
+  "unchangedMeasurementBase": "benchmarks/harness/passive-fifo-finite-v1",
+  "unchangedMeasurement": {
+    "benchmarks/harness/passive-fifo-finite-v1/campaign.test.mjs": "03fba0d79928becd362bb6bf877a7cc2c301b6916b36d36110736662cd02b099",
+    "benchmarks/harness/passive-fifo-finite-v1/dependencies.json": "eb1426bd504820e0d800f1c1cfe1b01844be3ee43aab80cb1d23928adf8b66ef",
+    "benchmarks/harness/passive-fifo-finite-v1/run.mjs": "6881f597989b70c46d50d87be31868b0f5d86b8338bf2e7118260e5a00f85295",
+    "benchmarks/harness/passive-fifo-finite-v1/browser.mjs": "aad533ee884fd6a31d325cac1237a24af12d92ffaaab275e64172b2c7bb82484",
+    "benchmarks/harness/passive-fifo-finite-v1/provenance.test.mjs": "db25b7d57294fab9614a385e76e29fad53657e024bbbbe48eb37bb2fd4a2d212",
+    "benchmarks/harness/passive-fifo-finite-v1/attempt.mjs": "bdc0da3725ba57e4a3d4729bc70f467afeb5fe8d8712eb6f216041a9999e4064",
+    "benchmarks/harness/passive-fifo-finite-v1/report.test.mjs": "e039979f67be0801f46e15e64f3f7bbcc189334e614c0497d4c24e9cc4275b29",
+    "benchmarks/harness/passive-fifo-finite-v1/planning.mjs": "145153b67eac698fbad25ed6a2e68018b1c978ac64cc85526f0d2e4972f16fe5",
+    "benchmarks/harness/passive-fifo-finite-v1/plan.mjs": "63f0e8079840a7cc5f0851907ef657c7525aa60fb6ad002a10ead887bb8c7ab9",
+    "benchmarks/harness/passive-fifo-finite-v1/report.mjs": "4fd1cbb5c41dbb08a3295ed6016e8be3378d9bd7463d1804cff67583abb36b42",
+    "benchmarks/harness/passive-fifo-finite-v1/snapshot.test.mjs": "8a79af85add89950b03ab5cb3677172d385c8567f65dfa8333d3532c513bd4fc",
+    "benchmarks/harness/passive-fifo-finite-v1/protocol.mjs": "4d7474f9e1413a4bf27d77b6f938abb7e051441bf88fab992e8344537ed4726c",
+    "benchmarks/harness/passive-fifo-finite-v1/analysis.test.mjs": "3bdcba727b13f19806626b572685e2e9fdf3ebbfac7a1e9f8f06e6168c48a57c",
+    "benchmarks/harness/passive-fifo-finite-v1/README.md": "0ac27851beed1c62d0eccb9ec4b54e182868dfe92607bb9e18a8062ffa82f6c0",
+    "benchmarks/harness/passive-fifo-finite-v1/horizon.test.mjs": "ee83adfda9f7eb092e9510f9f347f850369d16daa7570d6015e15d49ed54e9cd",
+    "benchmarks/harness/passive-fifo-finite-v1/package.mjs": "3e850a2a3621cf193ba0dc11b8c43efce755a33dfa712760939984b55fa1c5ea",
+    "benchmarks/harness/passive-fifo-finite-v1/analyze.mjs": "38dfccfa7925a5d7966c4bc6ccc6816cbbc9755aacb58bcc5d45966fef10b64e",
+    "benchmarks/harness/passive-fifo-finite-v1/campaign.mjs": "907959b77cddb5cb2f1732abc9621d2de57ed16ccf09eabd0358e6032f884536",
+    "benchmarks/harness/passive-fifo-finite-v1/attempt.test.mjs": "6453bb24323b710b0f84a96db4cbe0edc5e93bd9b2103453751b8b8747981fd2",
+    "benchmarks/harness/passive-fifo-finite-v1/snapshot.mjs": "64c127e7be5f12e72161a66fef29e2ef4ee76e921d55f47d8b49d029cc5bb2f6",
+    "benchmarks/harness/passive-fifo-finite-v1/horizon.mjs": "89c2675bd6a122d222769f0cfc384407357e484fa1eb4bfb7894ef5f83d3530f",
+    "benchmarks/harness/passive-fifo-finite-v1/vm-adapter.mjs": "1dcda16f3d9490eeb47f8586381d43453f6bd29f18be190864195cc7449428e8"
+  },
+  "copyOrigins": {
+    "benchmarks/harness/passive-fifo-finite-deadline-v2/plan.mjs": {
+      "path": "benchmarks/harness/passive-fifo-finite-v1/plan.mjs",
+      "sha256": "63f0e8079840a7cc5f0851907ef657c7525aa60fb6ad002a10ead887bb8c7ab9"
+    },
+    "benchmarks/harness/passive-fifo-finite-deadline-v2/campaign.mjs": {
+      "path": "benchmarks/harness/passive-fifo-finite-v1/campaign.mjs",
+      "sha256": "907959b77cddb5cb2f1732abc9621d2de57ed16ccf09eabd0358e6032f884536"
+    },
+    "benchmarks/harness/passive-fifo-finite-deadline-v2/analyze.mjs": {
+      "path": "benchmarks/harness/passive-fifo-finite-v1/analyze.mjs",
+      "sha256": "38dfccfa7925a5d7966c4bc6ccc6816cbbc9755aacb58bcc5d45966fef10b64e"
+    }
+  },
+  "independentReviewOrigin": {
+    "path": "experiments/passive-fifo-finite-review/review.py",
+    "sha256": "df2ef812c5dd59c44391bb6186c8aaa3fa8e5f6469fb1c5c8b65eccb414dd945"
+  },
+  "changes": [
+    "Explicit hash-bound prospective executionPolicy for only repetitions02/03; same child runner, browser, packages, fixed work and numerical rules.",
+    "Declared600000/1800000ms timeout with unchanged20000ms outer grace; no confirmation or replacement of haltedset01.",
+    "Exclusive new plan publication flushes file and parent directory before success.",
+    "Independent Python replay changes expected deadline metadata and verifies policy; original evidence and arithmetic checks retained."
+  ],
+  "evidence": "Host synthetic tests only; no new timing campaign launched."
+}

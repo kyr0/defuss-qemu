@@ -1,0 +1,12 @@
+{
+  "source": "packaging/bun-app/vm.mjs",
+  "sourceSha256": "e79d5575cbf8f8a35ca9013b841f3a9a312dee9037fd83d51f7e5a60bdb77f58",
+  "changes": [
+    "project-local import paths",
+    "optional disabled-by-default helper profiling bus and static helper dictionary",
+    "expose module and helper bus",
+    "pause/query-status/resume for bounded stopped diagnostic gates",
+    "bounded paused physical-memory and register reads for opt-in phase-end code inspection"
+  ],
+  "scope": "Harness only; production launcher unchanged"
+}

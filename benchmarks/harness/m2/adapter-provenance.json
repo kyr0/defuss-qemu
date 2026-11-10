@@ -1,0 +1,19 @@
+{
+  "run.mjs": {
+    "source": "benchmarks/harness/m1/run.mjs",
+    "sha256": "aa02286543ddd4d7c742c09d58275b6d06df144c80cccebd3d7be98540998543"
+  },
+  "browser.mjs": {
+    "source": "benchmarks/harness/m1/browser.mjs",
+    "sha256": "c52884eb48b1d0e338d8c370a4f6b3f196ec7be304bd83f995b0f78d2730549f"
+  },
+  "vm-adapter.mjs": {
+    "source": "benchmarks/harness/m1/vm-adapter.mjs",
+    "sha256": "e0b9dcf43d4fe924eef89b68dd506f5cb68e548ac7263d8140d02cc9ac798492"
+  },
+  "campaign.mjs": {
+    "source": "benchmarks/harness/campaign/run.mjs",
+    "sha256": "dc7cb56b84b05691d21ec7c5e8d234240ad7ea6c947d939a4bf8196532b33057",
+    "changes": "M2 runner/source closure and explicit configuration validation; durable attempts, locking and recovery unchanged"
+  }
+}

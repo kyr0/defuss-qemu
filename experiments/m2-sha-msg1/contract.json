@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "experiment": "m2-sha-msg1",
+  "status": "source-implemented-not-executed",
+  "createdUtc": "2026-11-07T11:52:12.832215+00:00",
+  "productionChanged": false,
+  "emitterImplemented": true,
+  "built": false,
+  "guestValidated": false,
+  "performanceClaim": false,
+  "inputs": {
+    "engine/qemu/target/i386/ops_sse.h": {
+      "sha256": "468cf644a566e5a0db6d42db876c4d2fafeafa538b720286331ee1a832e8e497",
+      "bytes": 85815
+    },
+    "engine/qemu/target/i386/tcg/ops_sse_header.h.inc": {
+      "sha256": "b9336bf6e6594e0168b74dd04771a67b2dff1ee12012cc7ef466018c3384704f",
+      "bytes": 16346
+    },
+    "engine/qemu/target/i386/tcg/emit.c.inc": {
+      "sha256": "a583ef5a55226dec44d1ac09e408e3931fb063e98f88e836e577d0f5d41ff91a",
+      "bytes": 154825
+    },
+    "engine/qemu/target/i386/tcg/decode-new.c.inc": {
+      "sha256": "467036f2d3475fe0364af266b11dc4bacfd70bda5ccd75c6f72e9d13b8fe876e",
+      "bytes": 124019
+    },
+    "engine/qemu/tcg/tcg.c": {
+      "sha256": "23dc868c9b0afa4db3cccdc415810b31e41a5c2a8d4890cd81e5c1aaf0f07f96",
+      "bytes": 227592
+    },
+    "engine/qemu/tcg/wasm64/tcg-target.c.inc": {
+      "sha256": "ed85a4a4a6e8103c32bf62734d5e48ba201b08b1800375ba7412cba7b9ebbe28",
+      "bytes": 98464
+    },
+    "experiments/m2-sha-msg2/config.c.inc": {
+      "sha256": "31d829ffec601a441a3097bbd7dfbf57e234c40d43f815306f37a6d1c552e11e",
+      "bytes": 1167
+    },
+    "experiments/m2-sha-msg2/lowering.c.inc": {
+      "sha256": "7ad1548980447cbcf67074f59a7f926aaf93a4e98ba1c36888d6689a5f47b6db",
+      "bytes": 3492
+    },
+    "artifacts/m1-analysis-02/analysis.json": {
+      "sha256": "80ddd42dde44dac5c5949fcba3115ce6a24873a57435eee3ba794485f51ef21a",
+      "bytes": 1064583
+    },
+    "artifacts/m2-exposure-review-01/review.json": {
+      "sha256": "680ae281614dfdc0e7413ac660441a8315638ca03007419643da80b1194b7fc9",
+      "bytes": 33550
+    }
+  },
+  "referenceHelper": {
+    "path": "engine/qemu/target/i386/ops_sse.h",
+    "symbol": "helper_sha256msg1",
+    "bodySha256": "7173f172047d41f5a24d534181f54eb38e0d05a983ebdedbcfff6cc1c4dadefd",
+    "savedSource": "original b[0] before first write",
+    "writes": [
+      "d[0] = a[0] + sigma0(a[1])",
+      "d[1] = a[1] + sigma0(a[2])",
+      "d[2] = a[2] + sigma0(a[3])",
+      "d[3] = a[3] + sigma0(saved_b0)"
+    ],
+    "ordering": "Sequential stores and per-assignment source reads, modulo2^32",
+    "sigma0": {
+      "rotateRight": [
+        7,
+        18
+      ],
+      "logicalShiftRight": 3
+    }
+  },
+  "proposedClobbers": [
+    "TMP64_LOCAL_0_IDX",
+    "TMP64_LOCAL_1_IDX",
+    "TMP32_LOCAL_0_IDX",
+    "R0"
+  ],
+  "proposedSelector": {
+    "name": "defuss_m2_msg1_config",
+    "status": "defuss_m2_msg1_status",
+    "abi": 1,
+    "defaultEnabled": false,
+    "oneTimePreTranslation": true,
+    "independentOfMsg2": true,
+    "runtimeBranchInPerformanceModules": false
+  },
+  "existingExposure": [
+    {
+      "name": "sha256",
+      "sample": 0,
+      "compiledHelperCalls": {
+        "sha256msg2": 19378708,
+        "sha256msg1": 19378514
+      },
+      "scope": "Existing M1 diagnostic compiled-helper exposure, not exclusive elapsed cost"
+    },
+    {
+      "name": "sha256",
+      "sample": 1,
+      "compiledHelperCalls": {
+        "sha256msg2": 19666568,
+        "sha256msg1": 19666429
+      },
+      "scope": "Existing M1 diagnostic compiled-helper exposure, not exclusive elapsed cost"
+    },
+    {
+      "name": "sha256",
+      "sample": 2,
+      "compiledHelperCalls": {
+        "sha256msg2": 19667736,
+        "sha256msg1": 19667607
+      },
+      "scope": "Existing M1 diagnostic compiled-helper exposure, not exclusive elapsed cost"
+    }
+  ],
+  "acceptance": [
+    "Actual C-emitted WASM versus extracted helper oracle, memory32 andmemory64",
+    "Whole-pointer equality partitions and partial aliases preserve saved-b0 and sequential-store semantics",
+    "Hot/cold off/on full-system state and exact-count tests, forced fallback and warmed precise memory fault",
+    "Unchanged official Bun and held-out arbitrary inputs, capture/restore identities",
+    "Actual selected compiled MSG1 exposure under production flags3/hot1500",
+    "New declared uninstrumented selection and fresh independent confirmation with unchanged scoped budgets"
+  ],
+  "hostFixturesPrepared": true,
+  "hostFixturesExecuted": false,
+  "sourceUpdatedUtc": "2026-11-07T11:56:46.571152+00:00",
+  "originalContractArchive": "artifacts/m2-msg1-contract-01"
+}

@@ -1,0 +1,27 @@
+/* SPDX-License-Identifier: MIT */
+/*
+ * Based on tci/tcg-target-opc.h.inc
+ *
+ * These opcodes for use between the tci generator and interpreter.
+ */
+DEF(tci_movi, 1, 0, 1, TCG_OPF_NOT_PRESENT)
+DEF(tci_movl, 1, 0, 1, TCG_OPF_NOT_PRESENT)
+DEF(tci_setcond32, 1, 2, 1, TCG_OPF_NOT_PRESENT)
+DEF(tci_movcond32, 1, 2, 1, TCG_OPF_NOT_PRESENT)
+DEF(tci_divs32, 1, 2, 0, TCG_OPF_NOT_PRESENT)
+DEF(tci_divu32, 1, 2, 0, TCG_OPF_NOT_PRESENT)
+DEF(tci_rems32, 1, 2, 0, TCG_OPF_NOT_PRESENT)
+DEF(tci_remu32, 1, 2, 0, TCG_OPF_NOT_PRESENT)
+DEF(tci_clz32, 1, 2, 0, TCG_OPF_NOT_PRESENT)
+DEF(tci_ctz32, 1, 2, 0, TCG_OPF_NOT_PRESENT)
+DEF(tci_rotl32, 1, 2, 0, TCG_OPF_NOT_PRESENT)
+DEF(tci_rotr32, 1, 2, 0, TCG_OPF_NOT_PRESENT)
+DEF(tci_qemu_ld_rrr, 1, 2, 0, TCG_OPF_NOT_PRESENT)
+DEF(tci_qemu_st_rrr, 0, 3, 0, TCG_OPF_NOT_PRESENT)
+
+DEF(tci_add_s16, 1, 1, 1, TCG_OPF_NOT_PRESENT)
+DEF(tci_brcond32, 0, 2, 2, TCG_OPF_NOT_PRESENT)
+DEF(tci_brcond64, 0, 2, 2, TCG_OPF_NOT_PRESENT)
+DEF(tci_qemu_ld_imm32, 1, 1, 1, TCG_OPF_NOT_PRESENT)
+DEF(tci_qemu_st_imm32, 0, 2, 1, TCG_OPF_NOT_PRESENT)
+DEF(tci_call_typed, 0, 0, 1, TCG_OPF_NOT_PRESENT)

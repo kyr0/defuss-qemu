@@ -1,0 +1,114 @@
+{
+  "status": "passed",
+  "createdUtc": "2026-11-08T08:45:20.330439+00:00",
+  "checkouts": {
+    "v8-chrome": {
+      "path": "artifacts/engine-reference-01/source/v8-chrome",
+      "commit": "440c1c463e2e528c309af5067952e7b11631507f",
+      "origin": "https://chromium.googlesource.com/v8/v8.git",
+      "clean": true,
+      "files": {
+        "src/flags/flag-definitions.h": {
+          "sha256": "66410bfa170e21487c78a4983003c5b9226943dddf8102036a658a8ae456dc44",
+          "bytes": 216082
+        },
+        "src/wasm/baseline/liftoff-compiler.cc": {
+          "sha256": "7273f2e739de78defde88eab530ce8ecc29bd0d058996375b89845c33a979083",
+          "bytes": 499938
+        },
+        "src/wasm/module-compiler.cc": {
+          "sha256": "edd7992b733bd26ca4fe11f7c051725d8aab76df89b34c615a37413630703fe2",
+          "bytes": 178160
+        },
+        "src/wasm/module-instantiate.cc": {
+          "sha256": "af2a3b6d938908887a67286b7764555e1c2bc83207c8f15beb9dbdb76709efd1",
+          "bytes": 115017
+        },
+        "src/runtime/runtime-wasm.cc": {
+          "sha256": "8c1badea24782cf8a7d5d93b291497a81c0f3f5970a5c3ccf57fca53cfe70f72",
+          "bytes": 126718
+        }
+      }
+    },
+    "node": {
+      "path": "artifacts/engine-reference-01/source/node",
+      "commit": "364593d0631def13e3043dd84f77ebca2c767ce5",
+      "origin": "https://github.com/nodejs/node.git",
+      "clean": true,
+      "files": {
+        "deps/v8/src/flags/flag-definitions.h": {
+          "sha256": "9ca9821c2d9b29477cea1cb4d0686024be384ae6a4585e8586629017d557dac4",
+          "bytes": 199720
+        },
+        "deps/v8/src/wasm/baseline/liftoff-compiler.cc": {
+          "sha256": "d7a870be346840f7b28de4acd8a2a5ec025e5bbedff8dafee176167d23452642",
+          "bytes": 469240
+        },
+        "deps/v8/src/wasm/module-compiler.cc": {
+          "sha256": "5b79b3ee8be8907700111ccdac824bd67ab0fa65929016f631a88241d781fea2",
+          "bytes": 176646
+        }
+      }
+    },
+    "bun": {
+      "path": "artifacts/engine-reference-01/source/bun",
+      "commit": "38afee6c84fcf48c0edb2466aa4b27d287a59c30",
+      "origin": "https://github.com/oven-sh/bun.git",
+      "clean": true,
+      "files": {
+        "scripts/build/deps/webkit.ts": {
+          "sha256": "e801ac2b2c0b83767a10e4bf673addda60ff1c4e64d1246c0e442ce22b3c5059",
+          "bytes": 22073
+        },
+        "src/jsc/bindings/ZigGlobalObject.cpp": {
+          "sha256": "85b2806485ddf66c647aeae5bb7fadae417e49f9f3de843b5e72e51c72bf15ff",
+          "bytes": 251518
+        },
+        "src/js/node/crypto.ts": {
+          "sha256": "1f1b83e95a4f4e693811a13d670296913652f12408d634d4dcf5fd532d1c5368",
+          "bytes": 16627
+        }
+      }
+    },
+    "webkit-bun": {
+      "path": "artifacts/engine-reference-01/source/webkit-bun",
+      "commit": "d6375c72affe0f70222cdcb45012b10f0bf3a9d5",
+      "origin": "https://github.com/oven-sh/WebKit.git",
+      "clean": true,
+      "files": {
+        "Source/JavaScriptCore/runtime/OptionsList.h": {
+          "sha256": "7eb73bfd5b36a815455c3e911286f5c9ab73434c973fb52c3332ef478220ac48",
+          "bytes": 72090
+        },
+        "Source/JavaScriptCore/bytecode/CodeBlock.cpp": {
+          "sha256": "1620674735f3ab2872f8c8c656c062ab880b0cd81ec7c3dc719e225a8eb0f838",
+          "bytes": 180034
+        },
+        "Source/JavaScriptCore/dfg/DFGOperations.cpp": {
+          "sha256": "a29a2eefad82e39d97a4139bd42fea7c607917cb35f5ab9f3638a4f66bf3a186",
+          "bytes": 304401
+        },
+        "Source/JavaScriptCore/jit/ExecutableAllocator.cpp": {
+          "sha256": "5af92fef8f3df6475016fcf5532762e09966c67f9966cbc8eb3925f9683da806",
+          "bytes": 70098
+        },
+        "Source/JavaScriptCore/jit/ExecutableAllocator.h": {
+          "sha256": "efcdf8364c04c9934f1554e6bc7efcb5dbe4760cbf70de1bf3d9af7181101928",
+          "bytes": 15453
+        },
+        "Source/JavaScriptCore/assembler/LinkBuffer.cpp": {
+          "sha256": "6413e093e26c2cf07cce01dd7efb17db6673850604dc1d565dadb46f136e3e33",
+          "bytes": 23690
+        },
+        "Source/JavaScriptCore/runtime/JSONObject.cpp": {
+          "sha256": "591e2b124c09b2351dbc8446e0546e0a6a8f1c3cfa43fa07f4a033ad265778ed",
+          "bytes": 97072
+        },
+        "Source/WTF/wtf/PlatformEnable.h": {
+          "sha256": "965d3e71bae1ca09554a318c22966958936f988335a2fc5569776aeed12536ed",
+          "bytes": 35401
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+artifacts/
+assets/
+node_modules/
+packaging/bun-app/validation/
+__pycache__/
+*.pyc
+.DS_Store
+tmp/
+checkpoints/
+.env
+var/*
+output/*
+input/*
+dist/
+.vae/SWARM_STATUS.yaml
+# Root build output only: QEMU has authored scripts/coverage/ and target/ trees.
+/coverage/
+.cache/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+/target/
+
+# Generated QEMU runtimes. Keep authored runtime modules and pinned manifests.
+# Restore the archived baseline binaries for historical benchmark replay.
+/runtime/*/qemu-system-*.js
+/runtime/*/qemu-system-*.wasm

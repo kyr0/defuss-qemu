@@ -1,0 +1,11 @@
+--- experiments/memory32-rnds2/build.py
++++ experiments/memory32-rnds2/build-v2.py
+@@ -92,7 +92,7 @@
+                 artifact = build / (name + '.' + suffix)
+                 if artifact.exists(): shutil.copyfile(artifact, runtime / artifact.name)
+             for script in ['fix-emscripten-poll.py', 'expose-profile.py']:
+-                subprocess.run([os.sys.executable, str(ROOT / 'scripts' / script), str(runtime / (name + '.js'))], check=True)
++                subprocess.run([os.sys.executable, str(ROOT / ('experiments/memory32-rnds2' if script == 'expose-profile.py' else 'scripts') / script), str(runtime / (name + '.js'))], check=True)
+             stage_dependencies(runtime, ROOT / 'host/browser', output / 'runtime')
+         report['artifacts'] = {}
+         for path in sorted((output / 'runtime').rglob('*')):

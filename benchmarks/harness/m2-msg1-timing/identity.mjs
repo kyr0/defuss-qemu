@@ -1,0 +1,5 @@
+export {sha,inside,verifyInputs,durable,json,readBound,identity} from '../m3b-code-attribution/identity.mjs';
+export const sources=[...['config.mjs','guest.mjs','oracle.mjs','identity.mjs','run.mjs','campaign.py','analyze.py','freeze.py','test.mjs','exposure.py'].map(x=>'benchmarks/harness/m2-msg1-timing/'+x),
+'benchmarks/harness/m3b-code-attribution/config.mjs','benchmarks/harness/m3b-code-attribution/identity.mjs','benchmarks/harness/m1/protocol.mjs',
+'host/browser/qmp.mjs','host/browser/machine.mjs','packaging/bun-app/serial.mjs','packaging/bun-app/vm.mjs','packaging/bun-app/snapshots.mjs','tests/m3b-fallthrough/reader.mjs',
+'benchmarks/harness/m2-sustained-v2/host-condition.mjs','scripts/with-tmp.py','tmp/audit-owned-chrome-01.py','experiments/m2-sha-msg1/prepare.py','experiments/m2-sha-msg1/config.c.inc','experiments/m2-sha-msg1/lowering.c.inc','experiments/m2-msg1-performance/DESIGN.md','experiments/m2-msg1-performance/verify-source.py','experiments/m2-msg1-performance/validate.py','experiments/rnds2-lanes/prepare.py','package.json','package-lock.json','node_modules/playwright/package.json','node_modules/playwright-core/package.json'];

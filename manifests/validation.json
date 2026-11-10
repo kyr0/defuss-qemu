@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "dateUtc": "2026-11-07T08:09:25.991679+00:00",
+  "scope": "Source consolidation and correctness validation, not performance promotion",
+  "sourceReduction": {
+    "keptFiles": 10102,
+    "excludedFiles": 69026,
+    "importedBytes": 110547666,
+    "excludedBytes": 589109377,
+    "excludedPercentOfOriginalFileBytes": 84.19973512651397,
+    "excludedPercentOfOriginalFileCount": 87.23334344353452
+  },
+  "cleanBuild": {
+    "targets": [
+      "x86_64-softmmu",
+      "i386-softmmu",
+      "aarch64-softmmu"
+    ],
+    "sdk": "registry.gitlab.com/qemu-project/qemu/qemu/emsdk-wasm64-cross@sha256:c7e05b4d0052cbc9e069add4ca01d80bab034c5d07ea1415e0522fcac6497812",
+    "steps": [
+      {
+        "step": "configure",
+        "returncode": 0,
+        "seconds": 127.80317164500593
+      },
+      {
+        "step": "compile",
+        "returncode": 0,
+        "seconds": 536.5474794889742
+      }
+    ],
+    "report": "artifacts/build-03/build-report.json"
+  },
+  "validation": {
+    "serialSuiteStages": 12,
+    "snapshotHostTests": 5,
+    "bunResultsRetained": 12,
+    "bunResultsRebuilt": 12,
+    "arm64RetainedAndRebuilt": "Linux, virtio/NVMe full-disk data, NIC enumeration",
+    "x86Boot": "Real mode, protected-mode transition, arithmetic on both fresh i386 and x86_64 builds",
+    "snapshots": "Automatic and manual; cold and fresh-process resume; app hash separation; Chrome restart; extra rebuilt-runtime capture/resume"
+  },
+  "originalPreservation": {
+    "status": "passed",
+    "originalInputsChecked": 10102,
+    "mismatches": [],
+    "overlayBaseInputsChecked": 2
+  },
+  "reports": {
+    "artifacts/build-03/build-report.json": "0b4f15d978cecb8fd35ed3b983861fa15bcfe9733481657df3071b2563cca2dd",
+    "artifacts/validation/consolidation-03/validation.json": "4a660f6b28ab68fcf9c1f393ac3f0ea6d757a4b08fb11216d5bb91429edb9651",
+    "artifacts/validation/consolidation-rebuilt-snapshot-01/report.json": "66887778573e09bb189b1b9bbba3a5f88dd78dc98b27939130b608c838c9f567",
+    "artifacts/final-import-verification.json": "4c91783d1287b29260c52dd5d58ad9a4d3a1011c3734e2a52176bbf980c5c80d",
+    "artifacts/original-source-preservation.json": "3babf43b39987db9ee74cbb064a9ec132257ce5312e27d407a3e5a720182f936",
+    "packaging/bun-app/validation/consolidation-03-automatic/summary.json": "73b07eca8113921dc4cce99057750602c3ea1c8782934ac70bcd90cbf923ff19",
+    "packaging/bun-app/validation/consolidation-03-snapshots/summary.json": "3be317c7ebed70f9a58e31370ac7ebff11859764cd5df01d0bf9cedbd1276aa6",
+    "artifacts/validation/consolidation-03-bun-retained/report.json": "66c2eeebdd551cf83da5c5943472d0bf85d9d5c3dbae65a5498476681479ce7d",
+    "artifacts/validation/consolidation-03-bun-rebuilt/report.json": "816b4ef5333f624fda6366c727f8ff5abdee1239ff809c5a9c5137f536114e41",
+    "artifacts/consolidation-03-arm-retained.json": "86245ea958daf833a4eea4801588259d3a75fe691e1ceca1bca3bb73ffd7e811",
+    "artifacts/consolidation-03-arm-rebuilt.json": "0bfce8120bef8826816446cc700b3d9af457a453ff0c7c78d36936fe3b59d9e3",
+    "artifacts/consolidation-03-i386.json": "ffa8e19fafde11c3f2f0027d9f428ad9a7e3b95823f76d4c3eccbe9ba7ddfd57",
+    "artifacts/consolidation-03-x86-64.json": "996f615948b6a67d7ba9b01c15a019e0dc4591b15b87b1925289108bc9545329"
+  },
+  "runtimeBaselineManifestSha256": "2339eef6ee4156931e96221a7dde7d9975b2c01457e590c3843416000f3fa4a4",
+  "qemuImportManifestSha256": "a26bfa9023c291f22bff5d51d13f0b207b10337a4100dbd497cf1ec615eda637",
+  "currentHarnessFiles": {
+    "scripts/build.py": "9794256226477b8002a532764dc0cc10a2eafb3a6ec90ead536cf0594398e494",
+    "scripts/consolidate.py": "b838a481d97da5f5c5d600c242cc8817b22f0fe0c895b4799c223a2b170c49aa",
+    "scripts/sdk.py": "90b2abb3a0c39634444231375675fe986be849914575f983449b67d299c75392",
+    "scripts/expose-profile.py": "90d13f0f2e14a73b3e5f3e8b7ae026be9db02bf0f83d9a0e3d934fc84ec0e56c",
+    "scripts/check-snapshot-runtime.py": "25f27674559c3346abba580323ddbde1707645d21cb829ebbb907c5e246f6d9e",
+    "scripts/runtime_dependencies.py": "232a43287958ed6b01895ee4bf7b51ff884f784b7d9f6a0d89457d8f96d8eb44",
+    "scripts/check-consolidation.py": "8304316a4931eb92f01d195e66fb8ebd54fcf2272f1f16b8272fadbf39237917",
+    "scripts/container_engine.py": "262aa799f0efc12b8137cfdb040a6a130c1077a976f848e001aad25e2c63bf88",
+    "scripts/native-unwind-runtime.js": "fae7c53b5952c71a20a71dc60dc2bb72dbe0cb8279b6dd430bb74d8dc66d7527",
+    "scripts/verify-import.py": "687b81c83dfa52284aab29960ae174b83fc3c1ae72abaf7115ed7694cad602cf",
+    "scripts/helper-profile-runtime.js": "96d2a5cc4b1984bd003afb1f423afd30fea5439a9a78983d8962f1c0356af494",
+    "scripts/fix-emscripten-poll.py": "e1e9df6188c9dea002cac7005f89e334677a82f52710ead2bf98ed05d92552d0",
+    "packaging/bun_app_package.py": "8e8fc7f1a4d605be9090dc55b1587268a6335ab8044586399af6e3a5e2704308",
+    "packaging/bundle-bun.py": "64aa34db6ef993e3a9250102021e69bc0a1970f13fe7ebfed0f5f538fd8d76a4",
+    "packaging/bun-app/init": "26d47c2bd052e874792276808b2d0682d01d6bd0484208524c0020d52fb63739",
+    "packaging/bun-app/test.mjs": "55b590f11d9581daf3225b237c46cc6ec9672955bd47a3964953063744cd21f5",
+    "packaging/bun-app/globals.d.ts": "5787a3130befe59da119e22d6095da2bef25cd97256c7fc5cf9589e227fd6fb3",
+    "packaging/bun-app/run.mjs": "cc870a03a25b07f95688a3d4ab6d440e89dc7a94d2fe403e41ebadb03788c1cf",
+    "packaging/bun-app/file-store.mjs": "710103a973bfbab1018c5765d50fd88fbd9c54ad97c66fd63cf1e621d5751a0a",
+    "packaging/bun-app/boot.mjs": "1460945a6da621a0d5d4a202bc77064f1efd972919f941c1e398e4c91e3e9337",
+    "packaging/bun-app/vm.mjs": "e79d5575cbf8f8a35ca9013b841f3a9a312dee9037fd83d51f7e5a60bdb77f58",
+    "packaging/bun-app/test-auto.mjs": "3444484531a93cacab1dcaf910c7c1f00f8fc0c6613f66bd5aeb334129bc86a0",
+    "packaging/bun-app/test-e2e.mjs": "e3419ff3eebf44faa9219a967d3c38a0065db85338c6dd168aa878480d04a8d8",
+    "packaging/bun-app/snapshot-ready.mjs": "53d6da7fce18aa146e5e98f8ed3e02186f75dc708f4321c590e9030c5b3a90a2",
+    "packaging/bun-app/serial.mjs": "91dfd015e764edc9dae15c9d946d1110f8dd42d55f4211a7d9db63426607fd78",
+    "packaging/bun-app/snapshots.mjs": "6689e45235b61c6d31282811f6695dc5721d924cadd8a31f136c1fce14290a20",
+    "packaging/bun-app/example/main.ts": "cf664c51677fb067f67ac71ef7523ce5b57627623afa7e40a2d05b5c954283cf",
+    "packaging/bun-app/example/automatic.ts": "c723221e4c57b57f80977742b029546bf60ca3293eda0164def7de434b5c66e3",
+    "host/browser/trace.mjs": "5916a9b0c3e4ac54b44a996f10bd8e4b983ecc56d0c59223fac991659309b444",
+    "host/browser/helper-names.mjs": "378ecb332657a15b3d527850cd8dddb9620164917ea307712b2ca162dc60e682",
+    "host/browser/fat16.mjs": "7edcf2ce16dece6cece1cde02d5ecc198519f2582f1c0526b9d16f6931de3f73",
+    "host/browser/storage.mjs": "d2872a60124a481cff0befcf3d10d012fadbb38efe5a7be7bb84c52e1eb700ca",
+    "host/browser/display.mjs": "75bae881f9c5fdd356982eed49743ec4fa04fea1088d90159c5d3ab3de218473",
+    "host/browser/memory-diagnostics.mjs": "0fcc49690225dcc20699e8dc3b5e3bc7c9414b783c21f91c44416fefcddde412",
+    "host/browser/native-counters.mjs": "18918a3eca0a370e619a2e15a89c59f133bca8943dbeb72dff9578369dc5a25f",
+    "host/browser/machine.mjs": "7f59aabb20e8fbcd6dad2ee6a91b6f4e840cc60dca4b58eab991c7fa07d8a514",
+    "host/browser/runtime-settings.mjs": "54104c30422313973bf0f4cf2b6f5b385acc327d8c8f62ca66e2b4421a3f2e64",
+    "host/browser/win9x.mjs": "9dfc06babf491d9175849a8820a41df84eab77178fab0ff41283e24eaf56f19b",
+    "host/browser/qmp.mjs": "dc7604bb0d350c3c96bd49ab2b6bd9bcc8f6c7e173f69309198dda42a8ded7d0",
+    "host/browser/graphics.mjs": "649ab95785e7537c79578d3dd8e507c6fb1f102f4a14207020390f754caf853f",
+    "host/browser/hotspots.mjs": "31eeb1822331182cf8ac005b0fa8e7e21cb2adfaabeb3c356b6de04e66289e29",
+    "host/browser/audio/backend.mjs": "270a762776bd0de84660263679947212fd9f7b6e48ecfb6a1dbc944f15306b00",
+    "host/browser/audio/ringbuf.mjs": "e2480440789f7eac2c39871817f9f75b2423c7f8211e0ee4139f478c7cff89a8",
+    "host/browser/audio/pcm.mjs": "fb6c5d49d48a587d1975e43ba6e933298360692a49b4a56679118991b95e26ad",
+    "host/browser/share/block-file.mjs": "72e78e58cf055d6e8b9049ef83fb058d8a0a98f26595d92ed6b65b9eff650b75",
+    "tests/x86-boot.S": "3ef53949fd3c0b100548612804255bd29f2b11b99618c0216b658696344567a0",
+    "tests/arm64-linux.mjs": "6a235df8f4cf28860a5b4f23b2e565b13aed0e5ea1020d2e6d60c14950248f86",
+    "tests/x86-boot.mjs": "648960f498c3bd892c0078ac40b4171bb597a23a3ff1cc0549f33ad7a986589b",
+    "tests/bun-smoke.mjs": "08fa3d8286675d17d587250a890c5874ebbff25fba00ec988e4374ab2a7ee2fb",
+    "tests/bun/fixture-config.mjs": "d6729de07b7d850a5d0a63f7b9d9db7c0e24a2102673546955b1692115f305be",
+    "tests/bun/guest.mjs": "05ab4db6034b44df5a392c0ab99b3531a08dd6c5dba7fbbe88b104928aec2f87",
+    "tests/fixtures/app-manifest.json": "04e4fa01cc20a9f53534767e9da3727bd31127cb9612086e3debec13afc8ec54",
+    "benchmarks/expected.json": "e0f1f4a96c2f5d3066695d9e26ab9980f97527a94b987ffc98947a61c2f84288",
+    "benchmarks/bundle-provenance.json": "571ecbc14871aac0e53f744d0205aa0bed417c390ad78ae4867d0bccd5dd23c6",
+    "benchmarks/workload.bundle.mjs": "9de0d9e4729f69c527fe90dbd83c7c58f7876be5c1382be492ccf892e42f1b24",
+    "benchmarks/workload/main.ts": "a535fa151f95888c504d9327b2a93eede7e5927b9034cb929149507caad9a0c3",
+    "benchmarks/workload/operations.ts": "12df6a72cf79cd0e2b9cfd826cf45c9d9322917524cd91d9844b84914c46b498",
+    "benchmarks/workload/package.json": "549fff36044a4d51c3e699802b577c383aa206236b63db2d2542e4c5ab1f8e7b"
+  },
+  "retainedFailedAttempts": [
+    "artifacts/build-01",
+    "artifacts/build-02",
+    "artifacts/validation/consolidation-01",
+    "artifacts/validation/consolidation-02"
+  ],
+  "limits": [
+    "No fresh performance confirmation; retained RNDS2 binaries remain the Bun default.",
+    "No full Windows 98 UI acceptance rerun.",
+    "ARM64 networking check covers device enumeration, not external packet transport.",
+    "i386 smoke does not imply an i386 Bun image."
+  ]
+}

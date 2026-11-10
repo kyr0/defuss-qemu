@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "defaultBunArchitecture": "amd64",
+  "runtimes": {
+    "x86_64": {
+      "origin": "imported RNDS2 production runtime",
+      "scope": "Independently confirmed SHA replay result; unchanged copied bytes",
+      "files": {
+        "runtime/x86_64/qemu-system-x86_64.js": {
+          "sha256": "2593a7d8d08971578bc68cab6d032408093d3d4bde0353bc085fcaf96c1adb9c",
+          "bytes": 189088
+        },
+        "runtime/x86_64/qemu-system-x86_64.wasm": {
+          "sha256": "ecfbc2b4efa6cffaf2b1a22e2d511f6a1e429c6f70c98aafe665176712c8bad4",
+          "bytes": 13232981
+        }
+      }
+    },
+    "aarch64": {
+      "origin": "imported arm64-stack-18 runtime",
+      "scope": "Retained Linux/storage correctness runtime",
+      "files": {
+        "runtime/aarch64/qemu-system-aarch64.js": {
+          "sha256": "12c6d668639b884f0806cc9df2000a1e9a9ca401ce4f0560f712dc4d8d45c093",
+          "bytes": 189184
+        },
+        "runtime/aarch64/qemu-system-aarch64.wasm": {
+          "sha256": "b6fd37ff481cdd0ab7997117c75e5567c2f9bf77f214ead60e11f0e5a1149fe6",
+          "bytes": 22391809
+        }
+      }
+    },
+    "i386": {
+      "origin": "artifacts/build-03/runtime/i386",
+      "scope": "Fresh consolidated source build; real/protected-mode smoke passed; no Bun i386 claim",
+      "files": {
+        "runtime/i386/qemu-system-i386.js": {
+          "sha256": "fa761313c5a326c30d2e7ee932ebb7b9daf0d1dd48d789eb9f05bf3d4da24308",
+          "bytes": 189421
+        },
+        "runtime/i386/qemu-system-i386.wasm": {
+          "sha256": "d58eec750f2505f03112a643c267ade129e380126f31296c156b1ca352eb07ab",
+          "bytes": 13269664
+        }
+      }
+    }
+  }
+}

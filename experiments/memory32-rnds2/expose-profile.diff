@@ -1,0 +1,26 @@
+--- scripts/expose-profile.py
++++ experiments/memory32-rnds2/expose-profile.py
+@@ -33,8 +33,8 @@
+ replace('startWorker=()=>{postMessage({cmd:"loaded"})',
+         'startWorker=async()=>{if(msgData.pcAudioBus){const a=await import("../audio/backend.mjs");a.connectGuestPCM(Module,msgData.pcAudioBus);}postMessage({cmd:"loaded"})',
+         ('startWorker=async()=>{Module.pcHelperBus=msgData.pcHelperBus;if(msgData.pcAudioBus)', 'startWorker=async()=>{Module.pcGraphicsBus=msgData.pcGraphicsBus;'))
+-helper_source=Path(__file__).with_name('helper-profile-runtime.js').read_text()
+-unwind_source=Path(__file__).with_name('native-unwind-runtime.js').read_text()
++helper_source=(Path(__file__).resolve().parents[2]/'scripts/helper-profile-runtime.js').read_text()
++unwind_source=(Path(__file__).resolve().parents[2]/'scripts/native-unwind-runtime.js').read_text()
+ if 'function pcInitNativeUnwind(' not in s:
+     replace('function instantiate_wasm(',unwind_source+'\nfunction instantiate_wasm(')
+ replace('wasmExports=instance.exports;wasmExports=Asyncify.instrumentWasmExports(wasmExports)',
+@@ -56,9 +56,9 @@
+     replace('function instantiate_wasm(',helper_source+'\nfunction instantiate_wasm(')
+ else:raise SystemExit('Unknown helper runtime; refuse to leave stale instrumentation')
+ replace('var helper={};helper.u=', 'var helper={};const pcSignatures=pcHelperSignatures(wasm);helper.u=')
+-old_helper='helper[i]=pcProfileHelper(wasmTable.get(idx),Number(idx))'
+-new_helper='helper[i]=pcProfileHelper(wasmTable.get(idx),Number(idx),pcSignatures?.[i])'
+-replace(old_helper if old_helper in s else 'helper[i]=wasmTable.get(idx)',new_helper)
++old_helper='helper[i]=pcProfileHelper(wasmTable.get(Number(idx)),Number(idx))'
++new_helper='helper[i]=pcProfileHelper(wasmTable.get(Number(idx)),Number(idx),pcSignatures?.[i])'
++replace(old_helper if old_helper in s else 'helper[i]=wasmTable.get(Number(idx))',new_helper)
+ replace('pcAudioBus:Module.pcAudioBus}', 'pcAudioBus:Module.pcAudioBus,pcHelperBus:Module.pcHelperBus}',
+         ('pcAudioBus:Module.pcAudioBus,pcHelperBus:Module.pcHelperBus,pcGraphicsBus:Module.pcGraphicsBus}',))
+ replace('startWorker=async()=>{if(msgData.pcAudioBus)',

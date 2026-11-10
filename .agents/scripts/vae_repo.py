@@ -1,0 +1,525 @@
+"""Repository facts: git state, path classification, process execution, JSON state I/O, history archives.
+
+VERIFIED: stdlib-only, so lifecycle hooks need no installs and run on any python3 >= 3.9."""
+from __future__ import annotations
+
+import gzip
+import hashlib
+import json
+import os
+import re
+import subprocess
+import tarfile
+import time
+import zlib
+from collections.abc import Iterable
+from pathlib import Path
+from typing import Any
+
+PLUGIN_ROOT = Path(__file__).resolve().parents[1]
+# The one owner of defuss-vae's state folder: every module builds its paths from these. WHY `.vae/` over the
+# earlier `.agents/`: other agent tools write to `.agents/` too, so a shared name could collide (vae_update.migrate).
+STATE_DIR = ".vae"
+LEGACY_STATE_DIR = ".agents"
+STATE_FILES = ("VERIFY.py", "MEMORY.md", "EPISODES.md", "CLI_GIST.md", "SWARM_STATUS.yaml")
+SOURCE_EXT = {
+    ".py", ".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".mts", ".cts",
+    ".go", ".rs", ".java", ".kt", ".kts", ".c", ".h", ".cc", ".cpp", ".hpp",
+    ".cs", ".fs", ".razor", ".cshtml", ".rb", ".php", ".swift", ".scala", ".groovy", ".sh", ".bash", ".zsh", ".fish",
+    ".vue", ".svelte", ".astro",
+}
+ENGINEERING_EXT = SOURCE_EXT | {
+    ".json", ".yaml", ".yml", ".toml", ".ini", ".cfg", ".conf", ".sql",
+    ".graphql", ".gql", ".proto", ".tf", ".tfvars", ".css", ".scss", ".less", ".html", ".properties",
+    # .NET project, solution and MSBuild files carry dependencies and build settings, like package.json does.
+    ".csproj", ".fsproj", ".vbproj", ".sln", ".slnx", ".props", ".targets",
+}
+TEST_EXT = SOURCE_EXT
+DOC_EXT = {".md", ".mdx", ".markdown"}
+# Architecture definitions besides production source: deployment, infrastructure, schemas, service contracts.
+ARCH_NAMES = {"Dockerfile", "Containerfile", "docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml"}
+ARCH_EXT = {".tf", ".sql", ".proto", ".graphql", ".gql"}
+# A folder holding one of these is a package: the boundary where README.md and ARCH.md coverage restarts.
+MANIFESTS = {"package.json", "pyproject.toml", "Cargo.toml", "go.mod", "setup.py", "pom.xml", "build.gradle", "build.gradle.kts"}
+# Folders that illustrate or exercise the architecture instead of being part of it.
+NON_ARCH_DIRS = {"fixtures", "examples", "example", "samples", "demo", "demos", "docs", "__snapshots__"}
+CODE_CONFIG = {
+    "package.json", "pyproject.toml", "setup.py", "setup.cfg", "tox.ini", "pytest.ini", ".coveragerc",
+    "go.mod", "go.sum", "Cargo.toml", "Cargo.lock", "bun.lock", "bun.lockb", "uv.lock",
+    "yarn.lock", "poetry.lock", "Pipfile.lock", "pdm.lock", "requirements.txt", "pom.xml", "build.gradle",
+    "build.gradle.kts", "settings.gradle", "settings.gradle.kts", "gradlew", "mvnw", "go.work", "go.work.sum",
+    "rust-toolchain", ".tool-versions", "Makefile", "CMakeLists.txt",
+    "tsconfig.json", "vite.config.js", "vite.config.ts", "vitest.config.js", "vitest.config.ts",
+    "jest.config.js", "jest.config.ts", "eslint.config.js", "eslint.config.mjs",
+}
+IGNORE_DIRS = {
+    ".git", ".hg", ".svn", "node_modules", ".venv", "venv", "target", "dist", "build",
+    ".next", ".nuxt", ".turbo", "coverage", ".coverage", "vendor", "__pycache__", "obj", ".gradle",
+}
+# Layout roots holding runtime state, logs and build outputs: never code, never test sources.
+RUNTIME_TOP = {"tmp", "var", "output"}
+
+
+# Installer default dirs (uv, bun, mise shims, rustup, `go install`, dotnet tools), appended to every gate command.
+FALLBACK_BIN = (".local/bin", ".bun/bin", ".local/share/mise/shims", ".cargo/bin", "go/bin", ".dotnet/tools")
+# Manifests naming a toolchain: the stack whose defaults, ignores and hints apply (`.csproj` and friends by suffix).
+STACK_FILES = {"go.mod": "go", "go.work": "go", "Cargo.toml": "rust", "pom.xml": "jvm", "build.gradle": "jvm",
+               "build.gradle.kts": "jvm", "settings.gradle": "jvm", "settings.gradle.kts": "jvm", "global.json": "dotnet",
+               "package.json": "js", "bun.lock": "js", "bun.lockb": "js", "pyproject.toml": "python", "uv.lock": "python"}
+DOTNET_EXT = {".csproj", ".fsproj", ".vbproj", ".sln", ".slnx"}
+# Browser UI sources: such a repo also gets the `web` defaults (Playwright e2e, local HTTPS).
+WEB_EXT = {".html", ".vue", ".svelte", ".astro", ".tsx", ".jsx", ".razor", ".cshtml"}
+# A test by name, per ecosystem: `*_test.go`, `test_*.py`, `*.test.ts`, `FooTest(s).java|kt|cs`, `FooSpec.scala`,
+# `FooIT.java`; or a folder like `tests/`, `src/test/`, `Calc.Tests/`, `commonTest/`. Case and separators keep
+# `latest.py`, `Contest.cs` and `manifest.rs` out.
+TEST_STEM = re.compile(r"(?i:^tests?$|^test_|[._-](?:tests?|spec)$)|(?<=[a-z0-9])(?:Tests?|Spec|IT)$")
+TEST_DIR = re.compile(r"(?i:(?:^|[._-])(?:tests?|__tests__|spec)$)|(?<=[a-z0-9])Tests?$")
+# Rust unit tests live inline (`#[cfg(test)] mod tests`); `cargo new --lib` creates nothing else.
+INLINE_TEST = re.compile(r"#\[(?:cfg\()?(?:\w+::)*test\b")
+
+
+def now_iso() -> str:
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+
+def run(
+    command: str | list[str],
+    cwd: Path,
+    timeout: int = 120,
+    env: dict[str, str] | None = None,
+    shell: bool | None = None,
+) -> subprocess.CompletedProcess[str]:
+    if shell is None:
+        shell = isinstance(command, str)
+    merged = os.environ.copy()
+    # VERIFIED: make 3.81 execs simple recipes (`uv run pytest`) with its *own* PATH, ignoring a Makefile `export PATH`;
+    # appending the installers' default dirs lets the gate find a uv/bun that `make setup` installed this session,
+    # while a tool already on PATH (e.g. Homebrew's) keeps precedence.
+    merged["PATH"] = os.pathsep.join([merged.get("PATH", ""), *(str(Path.home() / d) for d in FALLBACK_BIN)])
+    if env:
+        merged.update(env)
+    try:
+        return subprocess.run(
+            command,
+            cwd=str(cwd),
+            shell=shell,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=timeout,
+            env=merged,
+            executable="/bin/sh" if shell and os.name != "nt" else None,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as e:
+        out = e.stdout or ""
+        out = out.decode("utf-8", "replace") if isinstance(out, bytes) else out
+        return subprocess.CompletedProcess(command, 124, out + f"\nTIMEOUT>{timeout}s")
+
+
+def git_root(cwd: Path) -> Path | None:
+    p = run(["git", "rev-parse", "--show-toplevel"], cwd, timeout=5, shell=False)
+    return Path(p.stdout.strip()).resolve() if p.returncode == 0 and p.stdout.strip() else None
+
+
+def git_head(repo: Path) -> str | None:
+    p = run(["git", "rev-parse", "HEAD"], repo, timeout=5, shell=False)
+    return p.stdout.strip() if p.returncode == 0 else None
+
+
+def _nul_paths(args: list[str], repo: Path) -> set[str]:
+    p = subprocess.run(args, cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=8, check=False)
+    if p.returncode != 0:
+        return set()
+    return {x.decode("utf-8", "surrogateescape") for x in p.stdout.split(b"\0") if x}
+
+
+def dirty_paths(repo: Path) -> set[str]:
+    paths = set()
+    paths |= _nul_paths(["git", "diff", "--name-only", "-z"], repo)
+    paths |= _nul_paths(["git", "diff", "--cached", "--name-only", "-z"], repo)
+    paths |= _nul_paths(["git", "ls-files", "--others", "--exclude-standard", "-z"], repo)
+    return paths
+
+
+def committed_paths(repo: Path, start_head: str | None) -> set[str]:
+    head = git_head(repo)
+    if not start_head or not head or start_head == head:
+        return set()
+    return _nul_paths(["git", "diff", "--name-only", "-z", start_head, head], repo)
+
+
+def file_hash(path: Path) -> str:
+    if not path.exists() or not path.is_file():
+        return "<deleted>"
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def snapshot_dirty(repo: Path) -> dict[str, str]:
+    return {p: file_hash(repo / p) for p in sorted(dirty_paths(repo))}
+
+
+def changed_since(repo: Path, baseline: dict[str, Any]) -> list[str]:
+    before: dict[str, str] = baseline.get("dirty", {})
+    current = snapshot_dirty(repo)
+    changed = {p for p, h in current.items() if before.get(p) != h}
+    changed |= committed_paths(repo, baseline.get("head"))
+    return sorted(changed)
+
+
+def in_scope(path: str) -> bool:
+    """Project-owned files: not runtime state, agent memory or vendored/build directories."""
+    p = Path(path)
+    if not p.parts or p.parts[0] in RUNTIME_TOP or p.parts[0] in (STATE_DIR, LEGACY_STATE_DIR):
+        return False
+    return not any(part in IGNORE_DIRS for part in p.parts)
+
+
+def is_code(path: str) -> bool:
+    p = Path(path)
+    if not in_scope(path):
+        return False
+    return p.suffix.lower() in ENGINEERING_EXT or p.name in CODE_CONFIG or p.name in ARCH_NAMES
+
+
+def is_doc(path: str) -> bool:
+    # WHY Markdown only: the static prose checks parse fences, links and Mermaid blocks, which only Markdown defines.
+    return in_scope(path) and Path(path).suffix.lower() in DOC_EXT
+
+
+def outside_arch(path: str) -> bool:
+    """Tests, fixtures, examples, docs and hidden directories (`.github/`, `.claude-plugin/`): never architecture."""
+    parts = Path(path).parts[:-1]
+    return is_test(path) or any(p.startswith(".") or p.lower() in NON_ARCH_DIRS for p in parts)
+
+
+def is_arch_source(path: str) -> bool:
+    """Production code or an architecture definition: its folder needs an ARCH.md. Pure config and data do not."""
+    p = Path(path)
+    if not in_scope(path) or outside_arch(path):
+        return False
+    return is_production_source(path) or p.name in ARCH_NAMES or p.suffix.lower() in ARCH_EXT
+
+
+def is_interface(repo: Path, path: str) -> bool:
+    """An asset someone calls: a CLI (executable with a shebang, `__main__.py`, package `bin`) or an API
+    (public package manifest, OpenAPI|proto|GraphQL definition). Its folder needs a README.md.
+
+    WHY manifests and shebangs, not source scanning: they are how registries and shells find an interface, so they
+    decide without guessing frameworks; an HTTP server without a spec gets a README via a `file_exists` rule."""
+    p, f = Path(path), repo / path
+    if not in_scope(path) or outside_arch(path) or not f.is_file():
+        return False
+    if p.name == "package.json":
+        try:
+            pkg = json.loads(f.read_text("utf-8"))
+        except (OSError, ValueError):
+            return False
+        return isinstance(pkg, dict) and (bool(pkg.get("bin")) or is_library(pkg))
+    if p.name == "pyproject.toml":
+        return "[project]" in f.read_text("utf-8", errors="replace")
+    if p.name in {"Cargo.toml", "go.mod", "setup.py", "__main__.py"} or p.suffix.lower() in {".proto", ".graphql", ".gql"}:
+        return True
+    if p.name.lower().startswith(("openapi.", "swagger.")):
+        return True
+    if not os.access(f, os.X_OK):
+        return False
+    with f.open("rb") as fh:
+        return fh.read(2) == b"#!"
+
+
+def is_library(pkg: dict[str, Any]) -> bool:
+    """A package.json that publishes an API: not private and declares an entry point."""
+    return not pkg.get("private") and any(k in pkg for k in ("exports", "main", "module"))
+
+
+def stacks(files: Iterable[str]) -> set[str]:
+    """Toolchains the project's own files use. WHY in_scope and no hidden dirs: `.vae/VERIFY.py` is defuss-vae's
+    policy, not the project's code, and would make every initialized repo look like a Python project."""
+    found = set()
+    for f in files:
+        p = Path(f)
+        if not in_scope(f) or any(part.startswith(".") for part in p.parts[:-1]):
+            continue
+        if p.name in STACK_FILES:
+            found.add(STACK_FILES[p.name])
+        elif p.suffix == ".py":
+            found.add("python")
+        elif p.suffix.lower() in DOTNET_EXT:
+            found.add("dotnet")
+        if p.suffix.lower() in WEB_EXT:
+            found.add("web")
+    return found
+
+
+def is_gated(path: str) -> bool:
+    return is_code(path) or is_doc(path)
+
+
+def is_test(path: str) -> bool:
+    p = Path(path.replace("\\", "/"))
+    return bool(TEST_STEM.search(p.stem) or any(TEST_DIR.search(d) for d in p.parts[:-1]))
+
+
+def is_production_source(path: str) -> bool:
+    p = Path(path)
+    return is_code(path) and p.suffix.lower() in SOURCE_EXT and not is_test(path)
+
+
+def code_fingerprint(repo: Path, paths: Iterable[str]) -> str:
+    """Content hash of the gated paths (code and doc pages): any edit invalidates verify, review and docs."""
+    h = hashlib.sha256()
+    for rel in sorted({p for p in paths if is_gated(p)}):
+        h.update(rel.encode("utf-8", "surrogateescape"))
+        h.update(b"\0")
+        h.update(file_hash(repo / rel).encode())
+        h.update(b"\0")
+    return h.hexdigest()
+
+
+def walk_files(repo: Path, limit: int = 50000) -> list[str]:
+    out: list[str] = []
+    for base, dirs, files in os.walk(repo):
+        b = Path(base)
+        top = b == repo
+        dirs[:] = [d for d in dirs if d not in IGNORE_DIRS and not d.startswith(".cache") and not (top and d in RUNTIME_TOP)]
+        for f in files:
+            out.append(str((b / f).relative_to(repo)).replace("\\", "/"))
+            if len(out) >= limit:
+                return out
+    return out
+
+
+def listed_files(repo: Path) -> list[str]:
+    """Tracked plus untracked-but-not-ignored files, from git's index. WHY at session start: VERIFIED: (20,000-file
+    repo) 20 ms against 135 ms for `walk_files`, and .gitignore already excludes build output; outside git: the walk."""
+    return sorted(_nul_paths(["git", "ls-files", "-z", "-co", "--exclude-standard"], repo)) or walk_files(repo)
+
+
+def find_test_files(repo: Path, files: list[str] | None = None) -> list[str]:
+    """Test files by name; without any, the first Rust source holding inline tests (read only then, so the common
+    case reads no file)."""
+    files = walk_files(repo) if files is None else files
+    named = [p for p in files if is_test(p) and Path(p).suffix.lower() in TEST_EXT]
+    if named:
+        return named
+    for p in files:
+        if p.endswith(".rs") and in_scope(p):
+            try:
+                if INLINE_TEST.search((repo / p).read_text("utf-8", errors="replace")):
+                    return [p]
+            except OSError:
+                continue
+    return []
+
+
+# Rule lines only (`a b: deps`, `a::`); `:=` and `::=` assignments are excluded by the lookahead.
+MAKE_RULE = re.compile(r"([A-Za-z0-9_.%/ -]+?)\s*:(?!:?=)(.*)")
+MAKE_ASSIGN = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)\s*[:?+!]*=\s*(.*)")
+# Recursive calls in a recipe: `$(MAKE) a b`, `${MAKE} -s a`, `make a`; arguments end at the first shell operator.
+MAKE_CALL = re.compile(r"(?:\$[({]MAKE[)}]|\bmake\b)((?:[ \t]+[^\s;&|<>()]+)*)")
+MAKE_VAR = re.compile(r"\$[({]([A-Za-z_][A-Za-z0-9_]*)[)}]")
+
+
+def make_graph(repo: Path) -> dict[str, set[str]]:
+    """Target → targets it runs: prerequisites plus same-Makefile `$(MAKE) t` recipe calls.
+    WHY static parsing over `make -pn`: VERIFIED (GNU Make 3.81) a dry run still evaluates `$(shell)` and spawns
+    `$(MAKE)` lines, so asking make would run project code; simple `$(VAR)` expansion covers `verify: $(CHECKS)`."""
+    try:
+        lines = (repo / "Makefile").read_text("utf-8", errors="replace").replace("\\\n", " ").splitlines()
+    except OSError:
+        return {}
+    assigns = {m.group(1): m.group(2) for m in map(MAKE_ASSIGN.match, lines) if m}
+
+    def expand(s: str) -> list[str]:
+        for _ in range(5):  # bounded: self-referencing variables must not loop
+            s = MAKE_VAR.sub(lambda m: assigns.get(m.group(1), m.group(0)) if m.group(1) != "MAKE" else m.group(0), s)
+        return s.split("#")[0].split()
+
+    graph: dict[str, set[str]] = {}
+    current: list[str] = []
+    for line in lines:
+        recipe = ""
+        if line.startswith("\t"):
+            recipe = line
+        elif (m := MAKE_RULE.match(line)) and not MAKE_ASSIGN.match(line):
+            current = m.group(1).split()
+            deps, _, recipe = m.group(2).lstrip(":").partition(";")
+            recipe = recipe.split(" ## ", 1)[0]  # `## usage` text (make help) is not a command, even if it says "make x"
+            for t in current:
+                graph.setdefault(t, set()).update(expand(deps))
+        elif line.strip() and not line.lstrip().startswith("#"):
+            current = []  # an assignment or directive ends the rule
+        for call in MAKE_CALL.finditer(recipe):
+            args = expand(call.group(1))
+            if any(a.startswith(("-C", "-f", "--directory", "--file")) for a in args):
+                continue  # another Makefile: its targets are not this file's
+            for t in current:
+                graph[t].update(a for a in args if not a.startswith("-") and "=" not in a)
+    return graph
+
+
+def make_reach(graph: dict[str, set[str]], target: str) -> set[str]:
+    seen: set[str] = set()
+    todo = [target]
+    while todo:
+        for dep in graph.get(todo.pop(), ()):
+            if dep not in seen:
+                seen.add(dep)
+                todo.append(dep)
+    return seen
+
+
+def safe_name(raw: str) -> str:
+    # lstrip(".") blocks `..` traversal out of tmp/vae/ via a crafted session id.
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", raw).lstrip(".")[:80] or "_"
+
+
+def runtime_dir(repo: Path, rel: str) -> Path:
+    """Layout runtime dir that ignores itself: gate state and logs never reach `git status`,
+    even in repos that have not gitignored var/ and tmp/ yet."""
+    d = repo / rel
+    d.mkdir(parents=True, exist_ok=True)
+    marker = d / ".gitignore"
+    if not marker.exists():
+        marker.write_text("*\n", "utf-8")
+    return d
+
+
+def read_json(path: Path) -> dict[str, Any] | None:
+    try:
+        v = json.loads(path.read_text("utf-8"))
+        return v if isinstance(v, dict) else None
+    except (OSError, ValueError):
+        return None
+
+
+def write_text_atomic(path: Path, text: str) -> None:
+    """Write through a temp file and `replace`, so a reader never sees half a file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(text, "utf-8")
+    tmp.replace(path)
+
+
+def write_private(path: Path, data: str | bytes) -> None:
+    """Atomic like `write_text_atomic`, readable by the owner only (mode 600): for files that hold page text,
+    prompts or model traces. WHY the mode at creation: a chmod after the write would leave the file readable by others
+    for a moment."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f"{path.name}.{os.getpid()}.{time.monotonic_ns()}.tmp")
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, "wb") as f:
+        f.write(data.encode("utf-8") if isinstance(data, str) else data)
+    tmp.replace(path)
+
+
+def write_json(path: Path, obj: dict[str, Any]) -> None:
+    write_text_atomic(path, json.dumps(obj, indent=2, sort_keys=True) + "\n")
+
+
+# -- history archives: gzip + .meta.json per version, never deleted ------------------------------------------------
+
+ARCHIVE_POINTER = "LATEST.json"
+BUNDLE_AFTER_DAYS = 7
+STAMP_RE = re.compile(r"\.(\d{8})T\d{9}Z(?:-\d+)?\.gz(?:\.meta\.json)?$")
+
+
+def archive_copy(src: Path, folder: Path, reason: str) -> Path | None:
+    """Gzip `src` into `folder` as `<name>.<UTC stamp>.gz` with `<same>.meta.json` beside it, whose `prev` names the
+    previous archive of the same file; `LATEST.json` names the newest per file. Identical content is archived once.
+
+    WHY a linked list in the metadata instead of sorting names: a reader walks one file's history newest to oldest from
+    one pointer, and the order survives a clock that jumps back. WHY write the archive before the pointer: a crash in
+    between leaves an unreferenced archive, never a pointer to a missing one."""
+    if not src.is_file():
+        return None
+    data = src.read_bytes()
+    digest = hashlib.sha256(data).hexdigest()
+    folder.mkdir(parents=True, exist_ok=True)
+    pointer = read_json(folder / ARCHIVE_POINTER) or {}
+    prev = pointer.get(src.name) if isinstance(pointer.get(src.name), str) else None
+    if prev and (read_json(folder / f"{prev}.meta.json") or {}).get("sha256") == digest:
+        return None
+    t = time.time()
+    stamp = time.strftime("%Y%m%dT%H%M%S", time.gmtime(t)) + f"{int(t % 1 * 1000):03d}Z"
+    name, n = f"{src.name}.{stamp}.gz", 1
+    while (folder / name).exists():
+        n += 1
+        name = f"{src.name}.{stamp}-{n}.gz"
+    tmp = folder / f".{name}.tmp"
+    with gzip.open(tmp, "wb") as fh:
+        fh.write(data)
+    tmp.replace(folder / name)
+    write_json(folder / f"{name}.meta.json", {"file": src.name, "created": now_iso(), "reason": reason,
+                                              "sha256": digest, "bytes": len(data), "prev": prev})
+    pointer[src.name] = name
+    write_json(folder / ARCHIVE_POINTER, pointer)
+    return folder / name
+
+
+def history_problems(folder: Path) -> list[str]:
+    """Walk every chain from `LATEST.json`: each archive must exist, decompress to its recorded sha256, and end."""
+    problems: list[str] = []
+    for name, newest in sorted((read_json(folder / ARCHIVE_POINTER) or {}).items()):
+        cur, seen = newest, set()
+        while isinstance(cur, str):
+            if cur in seen:
+                problems.append(f"{name}: cycle at {cur}")
+                break
+            seen.add(cur)
+            meta, gz = read_json(folder / f"{cur}.meta.json"), folder / cur
+            if meta is None or not gz.is_file():
+                problems.append(f"{name}: {cur} is missing")
+                break
+            try:
+                digest = hashlib.sha256(gzip.decompress(gz.read_bytes())).hexdigest()
+            except (OSError, EOFError, zlib.error) as e:
+                problems.append(f"{name}: {cur} does not decompress ({type(e).__name__})")
+            else:
+                if digest != meta.get("sha256"):
+                    problems.append(f"{name}: {cur} does not match its sha256")
+            cur = meta.get("prev")
+    return problems
+
+
+def bundle_old(folder: Path, days: int = BUNDLE_AFTER_DAYS, now: float | None = None, force: bool = False) -> list[str]:
+    """Pack loose archives older than `days` into one `<YYYY-MM-DD>.tar.gz` per day of their creation; the loose copies
+    go only after the bundle is written, so nothing is lost. Scans at most once a day unless forced.
+
+    WHY bundle at all: every archived write leaves two files, so a busy week would leave thousands; one file per day
+    keeps the folder listable while every byte stays retrievable (`tar -xzf <day>.tar.gz <name>`)."""
+    if not folder.is_dir():
+        return []
+    now = time.time() if now is None else now
+    today = time.strftime("%Y-%m-%d", time.gmtime(now))
+    marker = folder / ".bundled"
+    if not force and marker.is_file() and marker.read_text("utf-8").strip() == today:
+        return []
+    cutoff = time.strftime("%Y%m%d", time.gmtime(now - days * 86400))
+    groups: dict[str, list[Path]] = {}
+    for p in folder.iterdir():
+        m = STAMP_RE.search(p.name)
+        if m and m.group(1) < cutoff:
+            groups.setdefault(m.group(1), []).append(p)
+    done = []
+    for day, files in sorted(groups.items()):
+        label = f"{day[:4]}-{day[4:6]}-{day[6:]}"
+        target, n = folder / f"{label}.tar.gz", 1
+        while target.exists():
+            n += 1
+            target = folder / f"{label}.{n}.tar.gz"
+        tmp = folder / f".{target.name}.tmp"
+        with tarfile.open(tmp, "w:gz") as tar:
+            for f in sorted(files):
+                tar.add(f, arcname=f.name)
+        tmp.replace(target)
+        for f in files:
+            f.unlink()
+        done.append(f"{target.name} ← {len(files)} files")
+    marker.write_text(today + "\n", "utf-8")
+    return done
