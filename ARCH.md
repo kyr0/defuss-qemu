@@ -1,10 +1,32 @@
-# defuss-vm architecture
+# defuss-qemu architecture
 
 VERIFIED: This repository consolidates the QEMU source, retained Wasm
 runtimes, guest packaging and browser test harnesses. Experimental source
 overlays and builds live separately from the retained runtime. Source and
-runtime manifests let the verification commands detect accidental changes
-without requiring an experiment to replace the baseline.
+runtime manifests let the verification commands detect accidental changes.
+The selected MSG1 build lives in `runtime/current/`; the RNDS2 runtime keeps its
+original path and hashes. Selection changes the release default without erasing
+the control needed by historical measurements.
+
+## Package boundary
+
+VERIFIED: The npm package includes the selected three-target binaries, their
+browser dependencies, PC firmware, license notices and a source archive.
+Guest disks, operating-system images, snapshots and captures are excluded.
+`packaging/npm/build.py` verifies each selected binary before staging `dist/`.
+`packaging/npm/check.py` installs the tarball into a clean consumer and boots
+the installed runtime from both the application's origin and a separate origin.
+
+The loader selects MSG1 during `onRuntimeInitialized`, before QEMU starts.
+The PC and Bun hosts also initialize native services at that boundary: calling
+the CD staging function from `preRun` produced a stack error in the selected
+build. A real CD staging check covers that defect in the package consumer.
+
+Cross-origin ES-module workers start through a local Blob that imports the
+runtime's absolute URL. This keeps Wasm dependencies relative to the runtime
+while satisfying the browser's worker-origin rule. The application still needs
+cross-origin isolation; the remote files need CORS access. The Node loader
+preserves the generated runtime's worker handling.
 
 ## Measured execution path
 
@@ -49,8 +71,8 @@ separate from exclusive CPU cost and performance claims.
 The installed defuss-vae CLI and hooks are pinned under `.agents/` by
 `.vae/installation.json`. This chat invokes the installed gate with its actual
 session identifier. `make verify` covers installation integrity, real VAE
-integration tests, a built archive consumed in a clean directory, and retained
-source/runtime checks. The gate also verifies the current diagnostic and
+integration tests, an installed npm artifact booted in Chrome, and retained
+source/runtime checks. The gate also verifies the diagnostic and
 timing evidence bindings. Coverage is scoped to the installation verifier;
 it is not whole-VM coverage. See the
 [onboarding record](docs/decisions/vae-onboarding-01.md) for the hook-activation
@@ -74,7 +96,7 @@ documents it without creating a local override.
 
 Local checkpoints copy and verify source and selected evidence; separate
 runtime archives preserve the exact binaries. They do not claim an
-off-machine backup. The current handoff records live jobs and resume paths.
+off-machine backup. Each checkpoint includes the retained handoff record.
 
 ## Security and privacy
 
@@ -82,6 +104,11 @@ The study's HTTP server listens on loopback and serves a hash-bound allowlist
 of runtime, driver and guest assets. Cross-origin isolation headers enable
 the shared-memory Wasm runtime. The guest and host communicate through the
 bounded serial/QMP protocol; rejected records remain in the evidence.
+
+The guest acceptance server mounts the installed package and explicitly named
+local media. Its default responses retain same-origin resource policy; a test
+server can enable CORS to exercise CDN loading. Guest media is read through
+browser file inputs or the explicit test mounts and is not part of npm output.
 
 Reports contain local paths, process identifiers, guest maps and serial data.
 Captures, logs and checkpoints remain in this workspace. These experiments

@@ -1,0 +1,9 @@
+defuss-qemu contains QEMU and the local WebAssembly integration.
+QEMU is distributed under GNU GPL version 2; individual source files retain
+their existing copyright and license notices. The corresponding imported
+source tree, local build scripts and provenance manifests are included in
+dist/source.tar.gz. The pinned SDK is identified in scripts/build.py.
+
+Browser support includes third-party code under the notices in dist/licenses.
+Firmware origins and licenses are listed in dist/licenses/firmware-README.txt.
+Guest operating systems and application images are not included in this package.

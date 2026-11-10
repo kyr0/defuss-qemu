@@ -5,7 +5,7 @@ CONFIG = {
     "lint_command": None,          # None → `make lint` (uv run ruff check . | bunx oxlint --deny-warnings).
     "test_command": None,          # None → `make test`. Commands run in the repo root.
     "coverage_command": None,      # None → `make coverage`; output needs `TOTAL <n>%` or an `All files |…|` table.
-    "integration_commands": ["make verify-import", "node experiments/engine-cpu-profile/check-evidence.mjs"],
+    "integration_commands": ["make verify-import", "node experiments/engine-cpu-profile/check-evidence.mjs", "python3 -B .vae/checks/release.py"],
     "e2e_commands": [],            # [] → `make e2e`: build + consume the publishable artifact.
     "e2e_paths": [],               # globs e2e depends on, e.g. ["web/*"]: e2e reruns only when one (or a build file) changed; [] → any code file.
     "timeout_s": 180,
@@ -45,16 +45,21 @@ CONFIG = {
 # scope: "path" = one exact file; "glob" = every changed code file matching (fnmatch); "glob" + "docs": True = every
 # changed doc page matching, e.g. {"id": "docs.arch.diagram", "kind": "contains", "path": "docs/ARCHITECTURE.md",
 # "text": "```mermaid", "claim": "architecture page keeps its diagram"}.
+NO_MOCK_PATTERN = (r"unittest\.mock|from\s+unittest\s+import\s+mock|MagicMock\(|mock\.patch|mocker\.|"
+                   r"jest\.(?:mock|fn|spyOn)\(|vi\.(?:mock|fn|spyOn)\(|sinon\.|gomock\.|mock\.Mock\b|Mockito\.|@Mock\s|mockk\(|"
+                   r"@Mock(?:ito)?Bean\b|new\s+Mock<|Mock\.Of<|Substitute\.For<|A\.Fake<|mockall:{2}|#\[automock\]")
+# Apply the unchanged call patterns to executable source. A JSON provenance
+# inventory can name excluded upstream mocking headers without using them.
+NO_MOCK_SOURCE_SUFFIXES = ('py', 'js', 'mjs', 'cjs', 'ts', 'mts', 'cts', 'tsx', 'jsx',
+                           'c', 'h', 'cc', 'cpp', 'cxx', 'hpp', 'inc', 'rs', 'go',
+                           'java', 'kt', 'kts', 'cs', 'sh', 'rb', 'swift', 'php')
 RULES = [{
-    "id": "tests.no-mocks",
+    "id": "tests.no-mocks." + suffix,
     "kind": "not_regex",
-    "glob": "*",
-    # Every alternative contains an escape, so this file never matches its own pattern.
-    "pattern": r"unittest\.mock|from\s+unittest\s+import\s+mock|MagicMock\(|mock\.patch|mocker\.|"
-               r"jest\.(?:mock|fn|spyOn)\(|vi\.(?:mock|fn|spyOn)\(|sinon\.|gomock\.|mock\.Mock\b|Mockito\.|@Mock\s|mockk\(|"
-               r"@Mock(?:ito)?Bean\b|new\s+Mock<|Mock\.Of<|Substitute\.For<|A\.Fake<|mockall:{2}|#\[automock\]",
+    "glob": "*." + suffix,
+    "pattern": NO_MOCK_PATTERN,
     "claim": "tests exercise real subsystems, not mock frameworks",
-}, {
+} for suffix in NO_MOCK_SOURCE_SUFFIXES] + [{
     "id": "vae.installation",
     "kind": "command",
     "command": "python3 -B .vae/checks/installation.py",

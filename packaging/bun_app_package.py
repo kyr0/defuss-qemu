@@ -133,7 +133,7 @@ def write_cpio(entries, path):
 
 
 def package_app(bundle, destination, *, manual_ready=False, runtime_dir=None):
-    runtime = Path(runtime_dir) if runtime_dir is not None else ROOT.parent / 'runtime/x86_64'
+    runtime = Path(runtime_dir) if runtime_dir is not None else ROOT.parent / 'runtime/current/x86_64'
     for name in ['qemu-system-x86_64.js', 'qemu-system-x86_64.wasm']:
         if not (runtime / name).is_file():
             raise ValueError(f'Missing runtime artifact: {runtime / name}')
@@ -181,7 +181,8 @@ def package_app(bundle, destination, *, manual_ready=False, runtime_dir=None):
         spec = {
             'schema': 1, 'os': 'linux', 'architecture': 'amd64', 'image': IMAGE, 'bunVersion': '1.4.4',
             'appSha256': artifacts['app.mjs']['sha256'],
-            'vm': {'machine': 'pc,acpi=off', 'cpu': 'max', 'ramMiB': 512, 'smp': 1, 'tbMiB': 128, 'hotLimit': 1500, 'runtimeFlags': 3},
+            'vm': {'machine': 'pc,acpi=off', 'cpu': 'max', 'ramMiB': 512, 'smp': 1, 'tbMiB': 128, 'hotLimit': 1500, 'runtimeFlags': 3,
+                   'msg1': '_defuss_m2_msg1_config' in (runtime / 'qemu-system-x86_64.js').read_text()},
             'snapshot': {'enabled': True, 'protocol': 'com1-ready-v1', 'readyByte': 49, 'readyMode': 'manual' if manual_ready else 'after-module', 'port': '/dev/ttyS0', 'console': '/dev/ttyS1'},
             'artifacts': artifacts,
         }

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "selection": "User-selected newest MSG1 candidate, enabled before translation",
+  "sourceFingerprint": "a183c1ab8a2ebabfcd2f31e689e89102e1ff293cb328f33a78edb32f80834142",
+  "buildReport": "artifacts/consolidation-build-01/build-report.json",
+  "configuration": {
+    "msg1": true,
+    "hotLimit": 1500,
+    "runtimeFlags": 3
+  },
+  "runtimes": {
+    "x86_64": {
+      "directory": "runtime/current/x86_64",
+      "files": {
+        "qemu-system-x86_64.js": {
+          "bytes": 189893,
+          "sha256": "8fa5c32c79c3caa9bbf1c4fb09f430b4d75e65255d6394711b20be5b69450974"
+        },
+        "qemu-system-x86_64.wasm": {
+          "bytes": 13367929,
+          "sha256": "7a6deedb63a340b57389570c7b978e078591615b10376b8a3ad1ad91fe78ee36"
+        }
+      }
+    },
+    "i386": {
+      "directory": "runtime/current/i386",
+      "files": {
+        "qemu-system-i386.js": {
+          "bytes": 189653,
+          "sha256": "ad6fa51a7d998574df3821b4f1326253955db9dc43861cade2fa7678dfa1f546"
+        },
+        "qemu-system-i386.wasm": {
+          "bytes": 13274882,
+          "sha256": "a89b60d7d756bc07ee4ae5f1e3bcc10b86217b38f787ec8d50911a0c08421fa4"
+        }
+      }
+    },
+    "aarch64": {
+      "directory": "runtime/current/aarch64",
+      "files": {
+        "qemu-system-aarch64.js": {
+          "bytes": 189416,
+          "sha256": "3407b515029d3db98b6dc87c938e0a8b83862cf85d1ac5588537f8f45d2c0647"
+        },
+        "qemu-system-aarch64.wasm": {
+          "bytes": 22422280,
+          "sha256": "37587e9502814d85d9c88416fc18d04e262c2ddcbd9a6ef591059e98d34cd40f"
+        }
+      }
+    }
+  }
+}

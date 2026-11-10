@@ -1,0 +1,30 @@
+{
+  "sourceArchive": "checkpoints/20261108T142335.085745Z-882206ce27be-vae-verified-new-engine-priorities/source.zip",
+  "sourceArchiveSha256": "f2bb28f09e414e3697a72347a1bc6d03896cd05bee8166bf038838d42adf2e2a",
+  "files": {
+    "package.json": {
+      "archiveMember": "package.json",
+      "path": "manifests/history/engine-capture-package.json",
+      "bytes": 365,
+      "sha256": "29328c5ce77b54f9fe5cfe8069e74edfcec8f1aaf40341e02317c294d6440d00"
+    },
+    "package-lock.json": {
+      "archiveMember": "package-lock.json",
+      "path": "manifests/history/engine-capture-package-lock.json",
+      "bytes": 1097,
+      "sha256": "07cf8ec1df0b0d6d2b0574e0caad37a9e3705991ee571d1547dfa0b0a786079c"
+    },
+    "packaging/bun-app/vm.mjs": {
+      "archiveMember": "packaging/bun-app/vm.mjs",
+      "path": "manifests/history/engine-capture-bun-vm.mjs",
+      "bytes": 8558,
+      "sha256": "e79d5575cbf8f8a35ca9013b841f3a9a312dee9037fd83d51f7e5a60bdb77f58"
+    },
+    "packaging/bun_app_package.py": {
+      "archiveMember": "packaging/bun_app_package.py",
+      "path": "manifests/history/engine-capture-bun-package.py",
+      "sha256": "d5d72d4e657da3b70123744a46f6054d0d73d3aed176b0f1918263f05885b911",
+      "bytes": 9560
+    }
+  }
+}

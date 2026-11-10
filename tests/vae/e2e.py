@@ -16,7 +16,7 @@ work = Path(tempfile.mkdtemp(prefix='vae-consumer-', dir=ROOT / 'tmp'))
 archive = work / 'input/defuss-vae-project.zip'
 manifest = json.loads((ROOT / '.vae/installation.json').read_text())
 paths = ['.agents/' + name for name in manifest['files']]
-paths += ['.vae/installation.json', '.vae/checks/installation.py', 'tests/vae/test_installation.py']
+paths += ['.vae/installation.json', '.vae/checks/installation.py', '.vae/VERIFY.py', 'tests/vae/test_installation.py']
 with zipfile.ZipFile(archive, 'x', compression=zipfile.ZIP_DEFLATED) as bundle:
     for name in paths:
         bundle.write(ROOT / name, name)

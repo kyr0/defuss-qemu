@@ -1,0 +1,21 @@
+{
+  "selectedBy": "User explicitly requested newest candidate on 2026-11-10",
+  "candidate": "m2-msg1-performance-build-01",
+  "sourceFingerprint": "a183c1ab8a2ebabfcd2f31e689e89102e1ff293cb328f33a78edb32f80834142",
+  "sourceChanges": {
+    "tcg/wasm64/tcg-target.c.inc": {
+      "sha256": "724ab3520ed5357e68454a4a1a3c8bd0b02ac0fd948ae9bd2b7abc1ea99b6eb3",
+      "bytes": 98670
+    },
+    "tcg/wasm64/m2-sha-msg1-config.c.inc": {
+      "sha256": "945c6c90559b3322af284b88e8fddbea5d7a0185acbff0e59872f9cdea0c0a61",
+      "bytes": 1167
+    },
+    "tcg/wasm64/m2-sha-msg1.c.inc": {
+      "sha256": "84058c88a934731f499ee13c6096df056e32f5affe3aab30e0b563c72b433888",
+      "bytes": 3845
+    }
+  },
+  "configuration": "MSG1 enabled by release launchers before translation; original selector ABI retained",
+  "performance": "No confirmed gain or non-regression claim; retained result interval crosses 1"
+}

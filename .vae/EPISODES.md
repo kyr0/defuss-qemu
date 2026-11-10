@@ -19,3 +19,15 @@ Wrap: EVERY lead becomes a test | .vae/VERIFY.py rule | one MEMORY line with BC,
 2026-11-08T14:22:18Z s=01a1b55a FINDING experiments/engine-cpu-profile/import-symbols.py:missing_indexes learn=verifier: Numeric keys are retained verbatim, duplicate keys fail, missing indexes are recorded, and the evidence verifier binds the complete originating map and mapped r
 2026-11-08T14:22:18Z s=01a1b55a FINDING ARCH.md; .env.example; experiments/engine-cpu-profile/README.md; experiments/engine-pressure-exposure/README.md learn=verifier: The installed documentation, prose and environment checks remain mandatory.
 2026-11-10T03:08:40Z s=01a1b55a FAIL package,tests.integration.2
+2026-11-10T05:42:03Z s=01a1b55a FAIL env.example,tests.no-mocks
+2026-11-10T05:49:37Z s=01a1b55a FAIL tests.e2e.1
+2026-11-10T05:52:18Z s=01a1b55a DONE fp=2c54c4b2dcbe cov=91.4% paths=ARCH.md,Makefile,README.md,e2e/acceptance.py(+39)
+2026-11-10T05:52:18Z s=01a1b55a FINDING host/browser/win9x.mjs; packaging/bun-app/vm.mjs: onRuntimeInitialized learn=test: packaging/npm/e2e.mjs tests native staging from both origins; Bun acceptance remains hash-bound by .vae/checks/release.py.
+2026-11-10T05:52:18Z s=01a1b55a FINDING host/browser/runtime-loader.mjs: workerScript; packaging/npm/index.mjs; packaging/bun-app/vm.mjs learn=test: Real Chrome same-origin and cross-origin consumers run in make e2e, with console/request/HTTP failures rejected.
+2026-11-10T05:52:18Z s=01a1b55a FINDING experiments/engine-cpu-profile/evidence-inputs.mjs: verifyRetainedInputs learn=test: tests/vae/evidence-inputs.test.mjs exercises actual filesystem bindings and rejects altered current or retained inputs; manifests/history/engine-capture-environ
+2026-11-10T05:52:18Z s=01a1b55a FINDING e2e/guest-systems.mjs: FreeDOS keyboard input learn=test: The retained installed-package FreeDOS command/file acceptance is required by the release verifier.
+2026-11-10T05:52:18Z s=01a1b55a FINDING e2e/slitaz-ui.mjs; e2e/guest-systems.mjs: SliTaz readiness learn=test: SliTaz acceptance requires the unique disk file, selected runtime hashes and unchanged ISO; visual readiness alone never passes acceptance.
+2026-11-10T05:52:18Z s=01a1b55a FINDING .vae/checks/release.py: check learn=verifier: The release checker runs in both make verify and the session gate integration commands.
+2026-11-10T05:52:18Z s=01a1b55a FINDING .vae/VERIFY.py: tests.no-mocks source rules learn=test: tests/vae/test_installation.py:test_mock_policy_distinguishes_source_from_provenance runs the real installed verifier without mocks.
+2026-11-10T05:52:18Z s=01a1b55a FINDING tests/vae/e2e.py: bundle paths learn=test: make e2e continues to test the extracted portable artifact, preventing accidental source-tree dependency use.
+2026-11-10T05:52:18Z s=01a1b55a FINDING .env.example: browser harness keys learn=verifier: The environment inventory check remains enabled.

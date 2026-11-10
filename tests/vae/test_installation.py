@@ -5,6 +5,8 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import runpy
+import sys
 import tempfile
 import unittest
 
@@ -46,6 +48,26 @@ class InstallationTests(unittest.TestCase):
         result = self.cli('doctor')
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn('VERIFIED[plugin.files]=true', result.stdout)
+
+    def test_mock_policy_distinguishes_source_from_provenance(self):
+        sys.path.insert(0, str(ROOT / '.agents/scripts'))
+        from vae_verify import run_custom_rule
+        rules = [r for r in runpy.run_path(str(ROOT / '.vae/VERIFY.py'))['RULES']
+                 if r['id'].startswith('tests.no-mocks.')]
+        self.assertTrue(rules)
+        files = {'fixture.py': "moc" + "ker.patch('dependency')\n",
+                 'fixture.mjs': "vi" + ".mock('dependency');\n",
+                 'fixture.java': "Mock" + "ito.verify(dependency);\n",
+                 'fixture.rs': '#[auto' + 'mock]\ntrait Dependency {}\n'}
+        inventory = self.repo / 'provenance.json'
+        inventory.write_text(json.dumps({'excluded': 'gmock-function-moc' + 'ker.h'}))
+        self.assertTrue(all(run_custom_rule(r, self.repo, 5, ['provenance.json']).value for r in rules))
+        for name, text in files.items():
+            path = self.repo / name
+            path.write_text(text)
+            self.assertTrue(any(run_custom_rule(r, self.repo, 5, [name]).value is False for r in rules), name)
+            path.write_text('// real subsystem test\n' if path.suffix != '.py' else '# real subsystem test\n')
+            self.assertTrue(all(run_custom_rule(r, self.repo, 5, [name]).value for r in rules), name)
 
     def test_modified_missing_and_extra_payload_are_rejected(self):
         target = self.repo / '.agents/skills/verify/SKILL.md'

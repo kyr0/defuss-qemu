@@ -14,7 +14,7 @@ export const chromeOptions = {
 };
 export const cdpPort = Number(process.env.CDP_PORT || 19223);
 assert.ok(Number.isInteger(cdpPort) && cdpPort > 0 && cdpPort <= 65535, 'Invalid CDP_PORT');
-export const runtimeDir = resolve(root, process.env.RUNTIME_DIR || 'runtime/x86_64');
+export const runtimeDir = resolve(root, process.env.RUNTIME_DIR || 'runtime/current/x86_64');
 
 export async function newRun() {
   await mkdir(dirname(artifacts), {recursive: true});

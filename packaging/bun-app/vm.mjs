@@ -1,4 +1,6 @@
 import {Qmp} from '../../host/browser/qmp.mjs';
+import {configureCandidate} from '../../host/browser/candidate.mjs';
+import {workerScript as browserWorkerScript} from '../../host/browser/runtime-loader.mjs';
 import {attachCom1} from './serial.mjs';
 import {bytes, sha256, canonical, snapshotKey, encodeSnapshot, decodeSnapshot, indexedDBSnapshotStore} from './snapshots.mjs';
 
@@ -83,10 +85,13 @@ export async function startBunApp({manifest, readAsset, runtimeUrl, workerScript
     ...(snapshot ? ['-incoming', 'defer'] : [])];
   const {default: factory} = await import(runtimeUrl);
   timer = setTimeout(() => fail(Error('Bun app readiness deadline exceeded')), timeoutMs);
-  factory({arguments: args, mainScriptUrlOrBlob: workerScript,
+  factory({arguments: args, mainScriptUrlOrBlob: browserWorkerScript(workerScript),
     printErr: text => emit('stderr', {text: String(text)}), onAbort: error => fail(Error('VM aborted: ' + error)),
-    preRun: [m => {
+    onRuntimeInitialized() {
+      const m = this;
       mod = m; m._defuss_set_hot_limit(vm.hotLimit); m._defuss46_settings(vm.runtimeFlags);
+      const selected = configureCandidate(m, vm.msg1 ?? false);
+      if (vm.msg1 === true && selected !== 0x10002) throw Error('Bun package requires the MSG1 runtime');
       m.FS.mkdir('/guest'); m.FS.mkdir('/rom');
       m.FS.writeFile('/guest/kernel', assets.kernel);
       m.FS.writeFile('/guest/initramfs', assets['initramfs.cpio.gz']);
@@ -115,12 +120,12 @@ export async function startBunApp({manifest, readAsset, runtimeUrl, workerScript
         if (s.tty?.ops === m.TTY.default_tty_ops) { qmp.accept(b.subarray(o, o + n)); return n; }
         return old(s, b, o, n, p);
       };
-    }],
+    },
   }).catch(fail);
   try {
     await Promise.race([qmp.greeting, fatal]);
     await Promise.race([qmp.send('qmp_capabilities'), fatal]);
-    emit('vm-started', {mode});
+    emit('vm-started', {mode, msg1Status: mod._defuss_m2_msg1_status?.() ?? null});
     if (mode === 'restored') {
       await Promise.race([qmp.send('migrate-incoming', {uri: 'file:/incoming-stream'}), fatal]);
       for (;;) {

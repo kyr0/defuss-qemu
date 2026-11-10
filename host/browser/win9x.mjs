@@ -1,4 +1,5 @@
 import {createHelperProfile,discoverHelperNames} from './hotspots.mjs';
+import {configureCandidate} from './candidate.mjs';
 import {resolveRuntimeSettings,runtimeFlags} from './runtime-settings.mjs';
 import {connectGuestPCM} from './audio/backend.mjs';
 import {createGraphicsBus,connectGraphicsCounters} from './graphics.mjs';
@@ -92,8 +93,9 @@ export async function startPC({factory,roms,disk,primary=null,diskMiB=512,floppy
   let readFrame;
   let startupError;
   const failed=new Promise((_resolve,reject)=>{startupError=reject;});
-  const cfg={pcHelperBus:helperBus,pcAudioBus:audioBus,pcGraphicsBus:graphicsBus,arguments:args,mainScriptUrlOrBlob,preRun:[m=>{
-    mod=m;if(helperBus)helperBus.names=discoverHelperNames(m.pcProfileWords());
+  const cfg={pcHelperBus:helperBus,pcAudioBus:audioBus,pcGraphicsBus:graphicsBus,arguments:args,mainScriptUrlOrBlob,onRuntimeInitialized(){
+    const m=this;
+    mod=m;configureCandidate(m);if(helperBus)helperBus.names=discoverHelperNames(m.pcProfileWords());
     m._defuss_set_hot_limit(runtimeSettings.effectiveHotLimit);
     m._defuss46_settings(runtimeFlags(runtimeSettings));
     if(sound!=='off')connectGuestPCM(m,audioBus);
@@ -124,7 +126,7 @@ export async function startPC({factory,roms,disk,primary=null,diskMiB=512,floppy
       }
       return old(s,b,o,n,p);
     };
-  }],printErr:s=>onError?.(String(s)),onAbort:e=>startupError(Error(String(e)))};
+  },printErr:s=>onError?.(String(s)),onAbort:e=>startupError(Error(String(e)))};
   Promise.resolve(factory(cfg)).catch(e=>{onError?.(String(e));startupError(e);});
   let timeout;
   try{await Promise.race([qmp.greeting,failed,new Promise((_,rej)=>{timeout=setTimeout(()=>rej(Error('No QMP greeting')),45000);})]);}
@@ -184,7 +186,7 @@ export async function startPC({factory,roms,disk,primary=null,diskMiB=512,floppy
       (ac97?'Intel 82801AA AC’97 attached · PCI 8086:2415':'')+
       (!sb16&&!ac97?'Selected sound card missing from QEMU inventory':' · guest driver detection is separate')};
   }
-  return {qmp,model:[...args],runtimeSettings,tcg,opticalStatus,audioHardware,get cdBackend(){return cdBackend;},changeMedium,
+  return {qmp,model:[...args],runtimeSettings:{...runtimeSettings,msg1Status:mod._defuss_m2_msg1_status?.()??null},tcg,opticalStatus,audioHardware,get cdBackend(){return cdBackend;},changeMedium,
     storageStats(){return {primary:primary?.stats?.()??null,secondary:secondary?.stats?.()??null,fileOperations:{...io}};},
     ioOps(){return io.readOps+io.writeOps+(staged?mod._defuss_rom_counter(0)>>>0:0);},
     async blockStats(){return blockCounters(await qmp.send('query-blockstats'));},

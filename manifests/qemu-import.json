@@ -2,7 +2,7 @@
   "schema": 1,
   "source": "/Users/admin/Documents/deepseek-harness/default-workspace/native-build/qemu-11.1.3-wasm",
   "overlay": "/Users/admin/Documents/deepseek-harness/default-workspace/native-build/bun-inline/rnds2/source",
-  "selection": "Validated RNDS2 production overlay, including direct PSHUFB",
+  "selection": "Newest MSG1 candidate with retained RNDS2 and direct PSHUFB; selected by user for consolidation",
   "files": {
     ".b4-config": {
       "origin": "native-build/qemu-11.1.3-wasm/.b4-config",
@@ -50529,6 +50529,16 @@
       "origin": "native-build/qemu-11.1.3-wasm/target/xtensa/Kconfig",
       "sha256": "adbfa68d249dd046dc1e6127ded5ca967b08b10888bb0a2e07b64c2a6e1edbaa",
       "bytes": 52
+    },
+    "tcg/wasm64/m2-sha-msg1-config.c.inc": {
+      "origin": "artifacts/m2-msg1-performance-source-01/source/tcg/wasm64/m2-sha-msg1-config.c.inc",
+      "sha256": "945c6c90559b3322af284b88e8fddbea5d7a0185acbff0e59872f9cdea0c0a61",
+      "bytes": 1167
+    },
+    "tcg/wasm64/m2-sha-msg1.c.inc": {
+      "origin": "artifacts/m2-msg1-performance-source-01/source/tcg/wasm64/m2-sha-msg1.c.inc",
+      "sha256": "84058c88a934731f499ee13c6096df056e32f5affe3aab30e0b563c72b433888",
+      "bytes": 3845
     }
   },
   "excluded": {
@@ -326665,12 +326675,18 @@
     "meson.build": {
       "importedSha256": "41fb42db8c8807d1080ecdf76c3dfbcad8303db8dd7684aff9e10259f58eb24f",
       "sha256": "20c4fa2945b786b3db32e9beafe48d2df085d5eb9e46bfbcc13268a1a3ad4074"
+    },
+    "tcg/wasm64/tcg-target.c.inc": {
+      "importedSha256": "ed85a4a4a6e8103c32bf62734d5e48ba201b08b1800375ba7412cba7b9ebbe28",
+      "previousSha256": "ed85a4a4a6e8103c32bf62734d5e48ba201b08b1800375ba7412cba7b9ebbe28",
+      "sha256": "724ab3520ed5357e68454a4a1a3c8bd0b02ac0fd948ae9bd2b7abc1ea99b6eb3",
+      "reason": "Consolidate the user-selected newest MSG1 candidate"
     }
   },
   "totals": {
-    "keptFiles": 10102,
+    "keptFiles": 10104,
     "excludedFiles": 69026,
-    "importedBytes": 110547666,
+    "importedBytes": 110552678,
     "excludedBytes": 589109377
   }
 }

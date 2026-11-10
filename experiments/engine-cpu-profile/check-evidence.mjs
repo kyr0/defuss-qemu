@@ -3,7 +3,8 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {basename} from 'node:path';
-import {sha,verifyInputs} from '../../benchmarks/harness/m2-msg1-timing/identity.mjs';
+import {sha} from '../../benchmarks/harness/m2-msg1-timing/identity.mjs';
+import {verifyRetainedInputs as verifyInputs} from './evidence-inputs.mjs';
 const root=process.cwd(),read=async path=>JSON.parse(await readFile(path));
 const captures=[
  ['artifacts/engine-cpu-calibration-02','artifacts/engine-cpu-calibration-execution-02'],

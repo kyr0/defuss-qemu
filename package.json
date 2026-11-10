@@ -1,5 +1,5 @@
 {
-  "name": "defuss-vm",
+  "name": "defuss-qemu",
   "description": "Isomorphic, WASM based virtual machine with support for x86_64, x86_32 and arm64 guests, forked from qemu.",
   "type": "module",
   "scripts": {
@@ -7,9 +7,33 @@
     "verify": "python3 scripts/verify-import.py",
     "e2e:serve": "node e2e/server.mjs",
     "e2e:smoke": "node e2e/smoke.mjs",
-    "e2e:win98": "node e2e/run-win98.mjs"
+    "e2e:win98": "node e2e/run-win98.mjs",
+    "build": "python3 -B packaging/npm/build.py",
+    "prepack": "npm run build"
   },
   "devDependencies": {
     "playwright": "1.64.1"
+  },
+  "version": "0.1.0",
+  "license": "GPL-2.0-only",
+  "author": "Aron Homberg <info@aron-homberg.de>",
+  "packageManager": "npm@11.20.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyr0/defuss-qemu.git"
+  },
+  "homepage": "https://github.com/kyr0/defuss-qemu",
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "main": "./dist/index.mjs",
+  "jsdelivr": "./dist/index.mjs",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./runtime/*": "./dist/runtime/*",
+    "./firmware/*": "./dist/firmware/*",
+    "./manifest": "./dist/manifest.json"
   }
 }

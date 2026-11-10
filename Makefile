@@ -24,16 +24,19 @@ setup:
 	$(PYTHON) -B .vae/checks/installation.py
 
 verify: lint test coverage e2e verify-import
+	$(PYTHON) -B .vae/checks/release.py
 
 verify-import:
 	$(PYTHON) scripts/verify-import.py
 
 test:
 	$(WITH_TMP) $(NODE) --test packaging/bun-app/test.mjs
+	$(WITH_TMP) $(NODE) --test tests/vae/evidence-inputs.test.mjs
 	$(WITH_TMP) $(PYTHON) -B -m unittest discover -s tests/vae -v
 
 lint:
-	$(PYTHON) -B -c 'import ast; from pathlib import Path; paths=[Path(".vae/VERIFY.py"),*Path(".vae/checks").glob("*.py"),*Path("tests/vae").glob("*.py")]; [ast.parse(p.read_text(),filename=str(p)) for p in paths]; print("Python syntax checked:",len(paths))'
+	$(PYTHON) -B -c 'import ast; from pathlib import Path; paths=[Path(".vae/VERIFY.py"),*Path(".vae/checks").glob("*.py"),*Path("tests/vae").glob("*.py"),*Path("packaging/npm").glob("*.py"),*Path("e2e").glob("*.py")]; [ast.parse(p.read_text(),filename=str(p)) for p in paths]; print("Python syntax checked:",len(paths))'
+	$(PYTHON) -B -c 'import subprocess; from pathlib import Path; paths=[*Path("packaging/npm").glob("*.mjs"),Path("tests/candidate-isa.mjs"),Path("tests/bun-bundle.mjs"),Path("e2e/guest-systems.mjs"),Path("e2e/slitaz-ui.mjs"),Path("e2e/bun-bundle.mjs"),Path("host/browser/candidate.mjs"),Path("host/browser/runtime-loader.mjs")]; [subprocess.run(["$(NODE)","--check",str(p)],check=True) for p in paths]'
 	$(PYTHON) -B .vae/checks/installation.py
 
 coverage:
@@ -41,6 +44,7 @@ coverage:
 
 e2e:
 	$(WITH_TMP) $(PYTHON) -B tests/vae/e2e.py
+	$(WITH_TMP) $(PYTHON) -B packaging/npm/check.py
 
 gate:
 	$(WITH_TMP) $(VAE) gate --repo . --session '$(VAE_SESSION)'

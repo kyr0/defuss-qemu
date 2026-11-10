@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "sdk": "registry.gitlab.com/qemu-project/qemu/qemu/emsdk-wasm64-cross@sha256:c7e05b4d0052cbc9e069add4ca01d80bab034c5d07ea1415e0522fcac6497812",
+  "source": "/project/engine/qemu",
+  "targets": [
+    "x86_64-softmmu",
+    "i386-softmmu",
+    "aarch64-softmmu"
+  ],
+  "commands": [
+    [
+      "emconfigure",
+      "/project/engine/qemu/configure",
+      "--static",
+      "--cpu=wasm64",
+      "--target-list=x86_64-softmmu,i386-softmmu,aarch64-softmmu",
+      "--disable-werror",
+      "--disable-docs",
+      "--disable-tools",
+      "--disable-rust",
+      "--disable-guest-agent",
+      "--disable-plugins",
+      "--disable-download",
+      "--without-default-features",
+      "--enable-tcg",
+      "--disable-tcg-interpreter",
+      "--with-coroutine=wasm",
+      "--enable-fdt=internal",
+      "-Dc_args=-pthread -msimd128",
+      "-Dc_link_args=-pthread -msimd128 -sASYNCIFY=1 -sPROXY_TO_PTHREAD=1 -sFORCE_FILESYSTEM -sALLOW_TABLE_GROWTH -sTOTAL_MEMORY=2GB -sWASM_BIGINT -sEXPORT_ES6=1 -sASYNCIFY_IMPORTS=ffi_call_js -sEXPORTED_RUNTIME_METHODS=addFunction,removeFunction,TTY,FS -sSTACK_SIZE=1048576 -sDEFAULT_PTHREAD_STACK_SIZE=1048576 -sSTACK_OVERFLOW_CHECK=2",
+      "-Doptimization=2"
+    ],
+    [
+      "ninja",
+      "-j6",
+      "qemu-system-x86_64.js",
+      "qemu-system-i386.js",
+      "qemu-system-aarch64.js"
+    ]
+  ],
+  "runs": [
+    {
+      "step": "configure",
+      "returncode": 0,
+      "seconds": 149.900405519
+    },
+    {
+      "step": "compile",
+      "returncode": 0,
+      "seconds": 707.9297713120001
+    }
+  ],
+  "status": "passed",
+  "scope": "Fresh source build; imported runtime performance claims do not transfer automatically",
+  "emccVersion": "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 5.0.2 (dc80f645ee70178c11666de0c3860d9e064d50e4)\nCopyright (C) 2026 the Emscripten authors (see AUTHORS.txt)\nThis is free and open source software under the MIT license.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "sourceFingerprint": "a183c1ab8a2ebabfcd2f31e689e89102e1ff293cb328f33a78edb32f80834142",
+  "artifacts": {
+    "runtime/aarch64/qemu-system-aarch64.js": {
+      "sha256": "3407b515029d3db98b6dc87c938e0a8b83862cf85d1ac5588537f8f45d2c0647",
+      "bytes": 189416
+    },
+    "runtime/aarch64/qemu-system-aarch64.wasm": {
+      "sha256": "37587e9502814d85d9c88416fc18d04e262c2ddcbd9a6ef591059e98d34cd40f",
+      "bytes": 22422280
+    },
+    "runtime/audio/backend.mjs": {
+      "sha256": "270a762776bd0de84660263679947212fd9f7b6e48ecfb6a1dbc944f15306b00",
+      "bytes": 2671
+    },
+    "runtime/audio/pcm.mjs": {
+      "sha256": "fb6c5d49d48a587d1975e43ba6e933298360692a49b4a56679118991b95e26ad",
+      "bytes": 3601
+    },
+    "runtime/audio/ringbuf.mjs": {
+      "sha256": "e2480440789f7eac2c39871817f9f75b2423c7f8211e0ee4139f478c7cff89a8",
+      "bytes": 6812
+    },
+    "runtime/graphics.mjs": {
+      "sha256": "649ab95785e7537c79578d3dd8e507c6fb1f102f4a14207020390f754caf853f",
+      "bytes": 5303
+    },
+    "runtime/i386/qemu-system-i386.js": {
+      "sha256": "ad6fa51a7d998574df3821b4f1326253955db9dc43861cade2fa7678dfa1f546",
+      "bytes": 189653
+    },
+    "runtime/i386/qemu-system-i386.wasm": {
+      "sha256": "a89b60d7d756bc07ee4ae5f1e3bcc10b86217b38f787ec8d50911a0c08421fa4",
+      "bytes": 13274882
+    },
+    "runtime/native-counters.mjs": {
+      "sha256": "18918a3eca0a370e619a2e15a89c59f133bca8943dbeb72dff9578369dc5a25f",
+      "bytes": 1650
+    },
+    "runtime/x86_64/qemu-system-x86_64.js": {
+      "sha256": "8fa5c32c79c3caa9bbf1c4fb09f430b4d75e65255d6394711b20be5b69450974",
+      "bytes": 189893
+    },
+    "runtime/x86_64/qemu-system-x86_64.wasm": {
+      "sha256": "7a6deedb63a340b57389570c7b978e078591615b10376b8a3ad1ad91fe78ee36",
+      "bytes": 13367929
+    }
+  }
+}

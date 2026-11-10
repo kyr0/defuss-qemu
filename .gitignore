@@ -26,3 +26,4 @@ dist/
 # Restore the archived baseline binaries for historical benchmark replay.
 /runtime/*/qemu-system-*.js
 /runtime/*/qemu-system-*.wasm
+/runtime/current/

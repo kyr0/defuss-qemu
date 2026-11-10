@@ -1446,11 +1446,17 @@ static bool emit_inline_rnds2(TCGContext *s, intptr_t func,
 }
 
 
+#define DEFUSS_M2_MSG1_DIAGNOSTIC 0
+#include "m2-sha-msg1-config.c.inc"
+#include "m2-sha-msg1.c.inc"
+
 static void tcg_wasm_out_call(TCGContext *s, intptr_t func,
                               const TCGHelperInfo *info)
 {
+    bool m2_msg1_on = m2_msg1_enabled();
     if (wasm44_defer) { return; }
     intptr_t ofs;
+    if (m2_msg1_on && emit_m2_msg1(s, func, info)) { return; }
     if (emit_inline_rnds2(s, func, info)) {
         return;
     }

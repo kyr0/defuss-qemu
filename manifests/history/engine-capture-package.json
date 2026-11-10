@@ -1,0 +1,15 @@
+{
+  "name": "defuss-vm",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test packaging/bun-app/test.mjs",
+    "verify": "python3 scripts/verify-import.py",
+    "e2e:serve": "node e2e/server.mjs",
+    "e2e:smoke": "node e2e/smoke.mjs",
+    "e2e:win98": "node e2e/run-win98.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1"
+  }
+}
